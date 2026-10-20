@@ -185,7 +185,7 @@ body{
 const APP = 'https://riichi-ramen.github.io/wabinavi-order/';
 const GAS = 'https://script.google.com/macros/s/AKfycbztP0245VXY7DRrjOQC9m4tu-DWKcGzPwT0QzBNgxfLxgczmYmQYlP8ErEz4umoJ3FN/exec';
 
-const CACHE_KEY = 'wabi_menu_v1';
+const CACHE_KEY = 'wabi_site_menu_v2';   // 注文アプリと同じオリジンを共有するため、専用キー以外は触らない
 const CACHE_MS  = 5 * 60 * 1000;
 
 // 画像キャッシュ回避タグ：30分ごとに変わる値（例 2026081410_00 / _30）。
@@ -244,15 +244,17 @@ function tategaki(jp) {
     .replace(/\d+/g, d => d.length <= 2 ? `<span class="tcy">${d}</span>` : d);
 }
 
-/* ── 取得（メニュー＋非表示リスト） ───────────────────────── */
-async function fetchMenu(force) {
-  if (!force) {
-    try {
-      const c = JSON.parse(sessionStorage.getItem(CACHE_KEY) || 'null');
-      if (c && Date.now() - c.at < CACHE_MS) return c.payload;
-    } catch (e) {}
-  }
-
+/* ── 取得（メニュー＋非表示リスト） ─────────────────────────
+   GASの応答が遅い（初回は十数秒かかることがある）ため、
+   前回の内容を端末に保存しておき、まずそれを即表示 → 裏で最新を取得して差し替える。 */
+function readCache() {
+  try {
+    const c = JSON.parse(localStorage.getItem(CACHE_KEY) || 'null');
+    if (c && c.payload && Array.isArray(c.payload.menu)) return c;
+  } catch (e) {}
+  return null;
+}
+async function fetchMenu() {
   // 非表示リストは取れなくても致命的ではないので、失敗しても続行する
   const [menuRes, hiddenRes] = await Promise.all([
     fetch(GAS + '?action=getMenu').then(r => r.json()),
@@ -267,7 +269,7 @@ async function fetchMenu(force) {
     menu:   menuRes.menu,
     hidden: (hiddenRes && hiddenRes.status === 'ok' && hiddenRes.hidden) || []
   };
-  try { sessionStorage.setItem(CACHE_KEY, JSON.stringify({ at: Date.now(), payload })); } catch (e) {}
+  try { localStorage.setItem(CACHE_KEY, JSON.stringify({ at: Date.now(), payload })); } catch (e) {}
   return payload;
 }
 
@@ -378,7 +380,9 @@ function render() {
   // 非表示指定を反映（⭐おすすめの複製は元IDで判定する）
   const cats = DATA.menu
     .map(c => ({ ...c, items: (c.items || []).filter(it => !hidden.has(it.imgKey || it.id)) }))
-    .filter(c => c.items.length);
+    .filter(c => c.items.length)
+    // 持ち帰り用容器（Pojemniki na Wynos）は客向けメニューに不要
+    .filter(c => !/pojemnik|na wynos|takeaway|container/i.test((c.namePL || '') + ' ' + (c.nameEN || '')));
 
   const promo = cats.find(c => c.id === 'osusume');
   const ramen = cats.find(c => c.id === 'ramen');
@@ -420,10 +424,24 @@ function render() {
 /* ── 起動 ─────────────────────────────────────────────────── */
 async function start(force) {
   const state = document.getElementById('state');
+  const cached = force ? null : readCache();
+
+  if (cached) {
+    // 前回の内容を即表示。5分以内ならそのまま使い、それ以上なら裏で更新する
+    DATA = cached.payload;
+    render();
+    if (Date.now() - cached.at < CACHE_MS) return;
+    try {
+      const fresh = await fetchMenu();
+      if (JSON.stringify(fresh) !== JSON.stringify(DATA)) { DATA = fresh; render(); }
+    } catch (e) { /* 失敗しても、表示中の内容をそのまま使う */ }
+    return;
+  }
+
   state.style.display = '';
   state.innerHTML = `<div class="spin"></div><span>${esc(T[LANG].loading)}</span>`;
   try {
-    DATA = await fetchMenu(force);
+    DATA = await fetchMenu();
     render();
   } catch (e) {
     state.innerHTML =

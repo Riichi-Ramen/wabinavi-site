@@ -939,5 +939,24 @@ window.addEventListener('DOMContentLoaded', function(){
   if(plBtn) setLang('pl', plBtn);
 });
 </script>
+<script>
+/* メニューの先読み：トップを開いた人が次にメニューを開いたとき、すぐ表示できるように
+   裏で取得して端末に保存しておく（保存キーは menu.html と共通。予約処理には影響しない）。 */
+(function(){
+  var K = 'wabi_site_menu_v2';
+  try { var c = JSON.parse(localStorage.getItem(K) || 'null'); if (c && Date.now() - c.at < 300000) return; } catch(e){}
+  setTimeout(function(){
+    Promise.all([
+      fetch(GAS_URL + '?action=getMenu').then(function(r){ return r.json(); }),
+      fetch(GAS_URL + '?action=getHiddenItems').then(function(r){ return r.json(); }).catch(function(){ return null; })
+    ]).then(function(r){
+      if (r[0] && r[0].status === 'ok' && Array.isArray(r[0].menu)) {
+        localStorage.setItem(K, JSON.stringify({ at: Date.now(), payload: {
+          menu: r[0].menu, hidden: (r[1] && r[1].status === 'ok' && r[1].hidden) || [] } }));
+      }
+    }).catch(function(){});
+  }, 2500);
+})();
+</script>
 </body>
 </html>
