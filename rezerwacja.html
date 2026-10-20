@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<!-- rezerwacja.html ・ v1.2-monday-i18n-20261020 -->
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rezerwacja – Wabi Navi Ramen, Toruń</title>
+<meta name="description" content="Zarezerwuj stolik w Wabi Navi — japońska restauracja ramen w sercu Torunia.">
+<meta name="robots" content="noindex">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--ink:#1a1208;--red:#c0392b;--gold:#b7860b;--sand:#f9f4eb;--band:#efe7d8;
+      --stone:#e0d8c8;--text:#2c2416;--muted:#7a6e5e;--white:#fff}
+body{font-family:"Inter",sans-serif;color:var(--text);background:var(--sand);line-height:1.5}
+
+.lang-bar{background:#f5f0e8;border-bottom:1px solid var(--stone);display:flex;justify-content:center;gap:2px;padding:0 1rem}
+.lang-bar button{background:none;border:none;border-bottom:2px solid transparent;color:#666;font-size:11px;padding:8px 11px;cursor:pointer;letter-spacing:.08em;font-family:inherit;transition:color .2s,border-color .2s}
+.lang-bar button.active{color:var(--red);border-bottom-color:var(--red);font-weight:500}
+
+header{background:var(--band);text-align:center;padding:2rem 1.25rem 1.75rem;border-bottom:3px solid var(--red)}
+header .brand{font-family:"Noto Serif JP",serif;font-size:13px;letter-spacing:.3em;color:var(--gold);text-transform:uppercase}
+header h1{font-family:"Noto Serif JP",serif;font-size:clamp(24px,6vw,36px);color:var(--ink);margin-top:.5rem;letter-spacing:.05em}
+header p{font-size:12px;color:#8a7c66;margin-top:.5rem;letter-spacing:.08em}
+
+.wrap{max-width:560px;margin:0 auto;padding:2rem 1.25rem 3rem}
+.card{background:#fff;border:1px solid var(--stone);border-radius:4px;padding:1.5rem 1.35rem}
+
+.phone-box{background:#fff;border-left:3px solid var(--red);padding:.95rem 1.05rem;margin-bottom:1.25rem;border-radius:3px}
+.pb-title{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);font-weight:600}
+.pb-num{display:inline-block;margin:.35rem 0 .5rem;color:var(--red);text-decoration:none;font-weight:600;font-size:21px;letter-spacing:.01em}
+.pb-hours{border-collapse:collapse;font-size:12px;color:var(--muted);line-height:1.75}
+.pb-hours td{padding:0 .9rem 0 0;white-space:nowrap;vertical-align:top}
+.pb-hours td:last-child{padding-right:0}
+.pb-hours b{color:var(--text);font-weight:600}
+.pb-extra{font-size:12px;color:var(--muted);line-height:1.7}
+.pb-extra:not(:empty){margin-top:.5rem;padding-top:.5rem;border-top:1px solid var(--stone)}
+
+.member-prompt{display:flex;gap:.6rem;align-items:flex-start;margin-bottom:1.1rem;padding:.8rem .95rem;background:#fdf6e3;border-left:3px solid var(--gold);border-radius:3px;font-size:12.5px;line-height:1.6;color:#5c4708}
+.member-prompt.hidden{display:none}
+.member-prompt .mp-ico{flex:none}
+
+.member-banner{display:none;margin-bottom:1.1rem;padding:.85rem 1rem;border-radius:3px;font-size:12.5px;line-height:1.6}
+.member-banner.checking{background:#f5f0e8;border-left:3px solid var(--stone);color:var(--muted)}
+.member-banner.is-member{background:#fdf6e3;border-left:3px solid var(--gold);color:#5c4708}
+.member-banner.is-guest{background:#f7f4ef;border-left:3px solid var(--red);color:var(--text)}
+.member-banner .mb-title{font-weight:600;display:block;margin-bottom:.25rem}
+.mb-actions{display:flex;flex-wrap:wrap;align-items:center;gap:.5rem;margin-top:.7rem}
+.mb-cta{display:inline-block;background:var(--red);color:#fff;text-decoration:none;padding:8px 15px;border-radius:2px;font-size:11.5px;letter-spacing:.05em}
+.mb-cta:hover{background:#a93226}
+.mb-skip{background:none;border:1px solid var(--stone);color:var(--muted);padding:8px 15px;border-radius:2px;font-size:11.5px;letter-spacing:.05em;cursor:pointer;font-family:inherit}
+.mb-skip:hover{border-color:var(--red);color:var(--red)}
+
+.form-group{margin-bottom:1rem}
+label.field{display:block;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:5px}
+.req-tag{color:var(--red);margin-left:.3rem;font-weight:700}
+.req-tag.hide{display:none}
+.opt-tag{display:none;margin-left:.45rem;color:var(--gold);text-transform:none;letter-spacing:.02em;font-size:10px;font-style:italic}
+.opt-tag.show{display:inline}
+input,select{width:100%;padding:11px 13px;border:1px solid var(--stone);background:#fff;font-size:16px;font-family:inherit;color:var(--text);border-radius:2px;outline:none;transition:border-color .2s}
+input:focus,select:focus{border-color:var(--red)}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}
+@media(max-width:520px){.form-row{grid-template-columns:1fr;gap:0}}
+.note{font-size:11px;color:var(--muted);margin-top:.4rem;line-height:1.5}
+.day-warn{margin-top:.5rem;padding:.6rem .7rem;border-left:3px solid var(--red);
+  background:#fdf2f0;border-radius:2px;font-size:12px;line-height:1.65;color:#8a2a1d}
+.day-warn b{font-weight:600}
+.day-warn span{display:block}
+
+.check{display:flex;align-items:flex-start;gap:.6rem;cursor:pointer;font-size:11.5px;color:var(--muted);line-height:1.55;margin-bottom:.75rem}
+.check input{width:auto;margin-top:2px;flex-shrink:0;accent-color:var(--red)}
+
+.btn-submit{width:100%;background:var(--ink);color:var(--sand);border:none;padding:16px;font-size:13px;letter-spacing:.14em;text-transform:uppercase;cursor:pointer;font-family:inherit;border-radius:2px;margin-top:.5rem}
+.btn-submit:hover:not(:disabled){background:#2c2010}
+.btn-submit:disabled{opacity:.65;cursor:default}
+.form-note{font-size:11px;color:var(--muted);margin-top:.75rem;text-align:center}
+
+.result{display:none;padding:1.15rem;border-radius:3px;background:#f0f7f2;border-left:3px solid #1e7a45;font-size:13.5px;line-height:1.7;color:#1a4a2e;margin-bottom:1rem}
+.result.pending{background:#f5f0e8;border-left-color:var(--gold);color:#5c4708}
+.result.error{background:#fdf2f0;border-left-color:var(--red);color:#8a2a1d}
+.result .rr-id{font-family:monospace;font-size:16px;font-weight:700;letter-spacing:.05em}
+.spinner{display:inline-block;width:13px;height:13px;border:2px solid rgba(183,134,11,.28);border-top-color:var(--gold);border-radius:50%;margin-right:.55rem;vertical-align:-2px;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+@media(prefers-reduced-motion:reduce){.spinner{animation-duration:2.4s}}
+
+.hp-field{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+footer{text-align:center;padding:1.5rem 1.25rem 2.5rem;font-size:11px;color:var(--muted);line-height:1.9}
+footer a{color:var(--red);text-decoration:none}
+</style>
+</head>
+<body>
+
+<div class="lang-bar">
+  <button class="active" onclick="setLang('pl',this)">PL</button>
+  <button onclick="setLang('en',this)">EN</button>
+  <button onclick="setLang('uk',this)">УК</button>
+  <button onclick="setLang('be',this)">БЕ</button>
+  <button onclick="setLang('ja',this)">日本語</button>
+</div>
+
+<header>
+  <div class="brand">Wabi Navi 和美なび</div>
+  <h1 data-pl="Zarezerwuj stolik" data-en="Reserve a table" data-ja="席のご予約" data-uk="Забронювати столик" data-be="Забраніраваць столік">Zarezerwuj stolik</h1>
+  <p data-pl="ul. Małe Garbary 5A · Toruń" data-en="ul. Małe Garbary 5A · Toruń" data-ja="トルン旧市街 · Małe Garbary 5A" data-uk="ul. Małe Garbary 5A · Торунь" data-be="ul. Małe Garbary 5A · Торунь">ul. Małe Garbary 5A · Toruń</p>
+</header>
+
+<div class="wrap">
+
+  <div class="phone-box">
+    <div class="pb-title">Rezerwacja telefoniczna&nbsp;/&nbsp;Phone reservations</div>
+    <a class="pb-num" href="tel:+48693865271">(+48) 693 865 271</a>
+    <table class="pb-hours">
+      <tr><td>Wt–Czw, Nd&nbsp;/&nbsp;Tue–Thu, Sun</td><td><b>13:00–19:30</b></td></tr>
+      <tr><td>Pt–Sob&nbsp;/&nbsp;Fri–Sat</td><td><b>13:00–21:30</b></td></tr>
+      <tr><td>Pon&nbsp;/&nbsp;Mon</td><td><b>Nieczynne / Closed</b></td></tr>
+    </table>
+    <div class="pb-extra" data-pl="" data-en="" data-ja="お電話でのご予約：火–木・日 13:00–19:30 ／ 金・土 13:00–21:30 ／ 月曜定休" data-uk="Телефоном: Вт–Чт, Нд 13:00–19:30 · Пт–Сб 13:00–21:30 · Пн зачинено" data-be="Тэлефонам: Аў–Чц, Нд 13:00–19:30 · Пт–Сб 13:00–21:30 · Пн зачынена"></div>
+  </div>
+
+  <div class="card">
+
+    <div id="memberPrompt" class="member-prompt">
+      <span class="mp-ico">⭐</span>
+      <span data-pl="Masz już konto w Wabi Navi Club? Wystarczy wpisać e-mail — rozpoznamy Cię automatycznie." data-en="Already a Wabi Navi Club member? Just enter your email — we'll recognise you automatically." data-ja="Wabi Navi Club の会員の方は、メールアドレスを入力するだけで自動的に認識されます。" data-uk="Вже маєте акаунт у Wabi Navi Club? Просто введіть e-mail — ми впізнаємо вас." data-be="Ужо маеце акаўнт у Wabi Navi Club? Проста ўвядзіце e-mail — мы вас пазнаем.">Masz już konto w Wabi Navi Club? Wystarczy wpisać e-mail — rozpoznamy Cię automatycznie.</span>
+    </div>
+
+    <div id="memberBanner" class="member-banner"></div>
+    <div id="resResult" class="result"></div>
+
+    <form id="reservationForm" onsubmit="submitReservation(event); return false;">
+      <div class="hp-field"><label>Nie wypełniaj</label><input type="text" id="resHp" tabindex="-1" autocomplete="off"></div>
+
+      <div class="form-group">
+        <label class="field" data-pl="E-mail" data-en="Email" data-ja="メールアドレス" data-uk="E-mail" data-be="E-mail">E-mail</label>
+        <input type="email" id="resEmail" required placeholder="jan@example.com" autocomplete="email" oninput="checkMemberDebounced()" onblur="checkMember()">
+        <p class="note" data-pl="Na ten adres wyślemy potwierdzenie." data-en="Confirmation is sent to this address." data-ja="このアドレスに確認メールをお送りします。" data-uk="На цю адресу надішлемо підтвердження." data-be="На гэты адрас дашлём пацвярджэнне.">Na ten adres wyślemy potwierdzenie.</p>
+      </div>
+
+      <div class="form-group">
+        <label class="field">
+          <span data-pl="Imię i nazwisko" data-en="Full name" data-ja="お名前" data-uk="Ім'я та прізвище" data-be="Імя і прозвішча">Imię i nazwisko</span><span class="req-tag" id="nameReq">*</span><span class="opt-tag" id="nameOpt">opcjonalne / optional</span>
+        </label>
+        <input type="text" id="resName" required placeholder="Jan Kowalski" autocomplete="name">
+        <p class="note" id="nameNote" style="display:none" data-pl="Rozpoznaliśmy Twoje konto — imię i telefon uzupełnimy z Twojego konta. Możesz zostawić te pola puste." data-en="We recognised your account — we'll fill in your name and phone from it. You can leave these fields blank." data-ja="会員として確認できました。お名前と電話番号は会員情報から補完しますので、空欄のままで結構です。" data-uk="Ми впізнали ваш акаунт — ім'я та телефон візьмемо з нього. Ці поля можна залишити порожніми." data-be="Мы пазналі ваш акаўнт — імя і тэлефон возьмем з яго. Гэтыя палі можна пакінуць пустымі.">Rozpoznaliśmy Twoje konto — imię i telefon uzupełnimy z Twojego konta. Możesz zostawić te pola puste.</p>
+      </div>
+
+      <div class="form-group">
+        <label class="field">
+          <span data-pl="Telefon kontaktowy" data-en="Phone number" data-ja="電話番号" data-uk="Телефон" data-be="Тэлефон">Telefon kontaktowy</span><span class="opt-tag show" id="phoneOpt">opcjonalne / optional</span>
+        </label>
+        <input type="tel" id="resPhone" placeholder="+48 000 000 000" autocomplete="tel">
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="field" data-pl="Data" data-en="Date" data-ja="予約日" data-uk="Дата" data-be="Дата">Data</label>
+          <input type="date" id="reservDate" required onchange="updateDayOfWeek()">
+          <div class="day-warn" id="dayWarn" hidden></div>
+        </div>
+        <div class="form-group">
+          <label class="field" data-pl="Godzina" data-en="Time" data-ja="時間" data-uk="Час" data-be="Час">Godzina</label>
+          <select id="timeSelect" required>
+            <option value="">--</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="field" data-pl="Liczba osób" data-en="Number of guests" data-ja="人数" data-uk="Кількість гостей" data-be="Колькасць гасцей">Liczba osób</label>
+        <select id="resGuests" required>
+          <option value="">--</option>
+          <option value="1">1</option><option value="2">2</option><option value="3">3</option>
+          <option value="4">4</option><option value="5">5</option><option value="6">6</option>
+          <option value="7">7</option>
+        </select>
+        <p class="note" data-pl="Grupy 8+ osób — prosimy o kontakt telefoniczny." data-en="Groups of 8+ — please call us." data-ja="8名以上のご予約はお電話でお願いします。" data-uk="Групи від 8 осіб — зателефонуйте нам." data-be="Групы ад 8 асоб — патэлефануйце нам.">Grupy 8+ osób — prosimy o kontakt telefoniczny.</p>
+      </div>
+
+      <div class="form-group">
+        <label class="field" data-pl="Uwagi / komentarze" data-en="Comments" data-ja="ご要望・コメント" data-uk="Коментарі" data-be="Каментарыі">Uwagi / komentarze</label>
+        <input type="text" id="resComment" placeholder="">
+      </div>
+
+      <label class="check">
+        <input type="checkbox" id="resGdpr" required>
+        <span data-pl="Wyrażam zgodę na przetwarzanie moich danych osobowych w celu realizacji rezerwacji zgodnie z RODO. *" data-en="I consent to the processing of my personal data for reservation purposes in accordance with GDPR. *" data-ja="予約目的のための個人情報処理に同意します（GDPR）。*" data-uk="Я погоджуюся на обробку моїх персональних даних (GDPR). *" data-be="Я згаджаюся на апрацоўку маіх асабістых даных (GDPR). *">Wyrażam zgodę na przetwarzanie moich danych osobowych w celu realizacji rezerwacji zgodnie z RODO. *</span>
+      </label>
+
+      <label class="check">
+        <input type="checkbox" id="resPromo">
+        <span data-pl="Wyrażam zgodę na otrzymywanie informacji promocyjnych. Zgodę można wycofać w dowolnym momencie." data-en="I agree to receive promotional information. Consent can be withdrawn at any time." data-ja="プロモーション情報の受け取りに同意します。いつでも撤回可能です。" data-uk="Я погоджуюся отримувати рекламні матеріали." data-be="Я згаджаюся атрымліваць рэкламную інфармацыю.">Wyrażam zgodę na otrzymywanie informacji promocyjnych. Zgodę można wycofać w dowolnym momencie.</span>
+      </label>
+
+      <p style="font-size:10px;color:#aaa;margin-bottom:.5rem" data-pl="Administratorem danych jest Wabi Navi, ul. Małe Garbary 5A, Toruń." data-en="Data controller: Wabi Navi, ul. Małe Garbary 5A, Toruń." data-ja="データ管理者：Wabi Navi, ul. Małe Garbary 5A, Toruń" data-uk="Адміністратор даних: Wabi Navi, ul. Małe Garbary 5A, Toruń." data-be="Адміністратар даных: Wabi Navi, ul. Małe Garbary 5A, Toruń.">Administratorem danych jest Wabi Navi, ul. Małe Garbary 5A, Toruń.</p>
+      <!-- 2026-09-20：同意欄からプライバシーポリシーを読めるように（RODO）。
+           言語切替は data-* を持つ要素の中身を丸ごと置き換えるので、リンク自体に4言語を持たせる。
+           ポリシー本体は PL/EN/JA の3言語のみ。ウクライナ語の文言にだけ対応言語を添える。 -->
+      <p style="font-size:10px;margin:-.3rem 0 .6rem">
+        <a href="https://riichi-ramen.github.io/wabinavi-order/polityka.html" target="_blank" rel="noopener" style="color:#a0522d"
+           data-pl="📄 Polityka prywatności" data-en="📄 Privacy policy" data-ja="📄 プライバシーポリシー" data-uk="📄 Політика конфіденційності (PL / EN / JA)">📄 Polityka prywatności</a>
+      </p>
+
+      <button type="submit" class="btn-submit" data-pl="Wyślij prośbę o rezerwację" data-en="Send reservation request" data-ja="予約リクエストを送る" data-uk="Надіслати запит на бронювання" data-be="Адправіць запыт на браніраванне">Wyślij prośbę o rezerwację</button>
+      <p class="form-note" data-pl="Potwierdzenie otrzymasz e-mailem." data-en="Confirmation will be sent by email." data-ja="確認メールをお送りします。" data-uk="Підтвердження надійде на e-mail." data-be="Пацверджанне прыйдзе на e-mail.">Potwierdzenie otrzymasz e-mailem.</p>
+    </form>
+  </div>
+</div>
+
+<footer>
+  Wabi Navi 和美なび · ul. Małe Garbary 5A, 87-100 Toruń<br>
+  <a href="https://g.page/WabiNaviRamen" target="_blank" rel="noopener">Google Maps</a> ·
+  <a href="mailto:wabinavi@gmail.com">wabinavi@gmail.com</a>
+</footer>
+
+<script>
+/* ══════════════════════════════════════════════════════════════
+   Wabi Navi — 独立予約ページ v1.0
+   WordPress.com はJavaScriptを削除するため、フォームはここに置き、
+   WordPress側からはボタンでこのページへ誘導します。
+   ══════════════════════════════════════════════════════════════ */
+
+var GAS_URL = 'https://script.google.com/macros/s/AKfycbztP0245VXY7DRrjOQC9m4tu-DWKcGzPwT0QzBNgxfLxgczmYmQYlP8ErEz4umoJ3FN/exec';
+var REGISTER_URL = 'https://riichi-ramen.github.io/wabinavi-order/stamp.html';
+
+/* ── 🎁 会員機能の表示・照合を行うか（2026-09-09 追加）─────────
+   会員制度・ポイント付与は未開始のため、このページでは
+     ・「Wabi Navi Club の会員の方は…」の黄色い案内
+     ・メール入力時の会員確認バナー（照合通信を含む）
+     ・送信完了画面の会員向け文言・入会案内
+   をすべて出さない。GASの SHOW_MEMBER_INVITE（24_Web.gs）と対になる設定。
+   開始するときは true に戻すだけでよい。
+   ※ 予約の送信・確認メール・シート記録はこの設定の影響を受けない。
+   ※ サーバー側（handleWebReservation）の会員照合は従来どおり動くので、
+     予約シートへの会員ID記録と店への「⭐会員」通知は残る。 */
+var SHOW_MEMBER_FEATURES = false;
+
+var currentLang = 'pl';
+
+var T = {
+  checking:{pl:'Sprawdzamy…',en:'Checking…',ja:'照合中…',uk:'Перевіряємо…',be:'Правяраем…'},
+  memberTitle:{
+    pl:'⭐ Rozpoznaliśmy Twoje konto — dziękujemy za stałą wierność!',
+    en:'⭐ We recognised your membership — thank you for your continued support!',
+    ja:'⭐ 会員として確認しました。毎度、ご愛顧ありがとうございます。',
+    uk:'⭐ Ми впізнали ваш акаунт — дякуємо за вашу вірність!',
+    be:'⭐ Мы пазналі ваш акаўнт — дзякуй за вашу вернасць!'},
+  memberBody:{
+    pl:'Szczegóły konta i polecane dania wyślemy w e-mailu potwierdzającym.',
+    en:'Your account details and our picks will be in the confirmation email.',
+    ja:'会員情報とおすすめのご案内は確認メールでお送りします。',
+    uk:'Деталі акаунта та рекомендації надішлемо в листі-підтвердженні.',
+    be:'Дэталі акаўнта і рэкамендацыі дашлём у лісце-пацвярджэнні.'},
+  guestTitle:{
+    pl:'Nie znaleźliśmy konta pod tym adresem.',
+    en:'We could not find an account for this address.',
+    ja:'このメールアドレスの会員登録は見つかりませんでした。',
+    uk:'Ми не знайшли акаунт для цієї адреси.',
+    be:'Мы не знайшлі акаўнт для гэтага адрасу.'},
+  guestBody:{
+    pl:'Dołącz do Wabi Navi Club — punkty przy każdej wizycie, kupony i darmowe japońskie książki. Rejestracja trwa minutę.',
+    en:'Join the Wabi Navi Club — points on every visit, coupons and free Japanese books. Registration takes a minute.',
+    ja:'Wabi Navi Club では、ご来店ごとにポイントが貯まり、クーポンや日本語書籍の無料貸出をご利用いただけます。登録は1分・無料です。',
+    uk:'Приєднуйтесь до Wabi Navi Club — бали, купони та безкоштовні книги.',
+    be:'Далучайцеся да Wabi Navi Club — балы, купоны і бясплатныя кнігі.'},
+  guestCta:{pl:'Załóż darmowe konto →',en:'Create a free account →',ja:'無料で会員登録する →',uk:'Створити акаунт →',be:'Стварыць акаўнт →'},
+  guestSkip:{pl:'Rezerwuj bez rejestracji →',en:'Continue without an account →',ja:'登録せずに予約へ進む →',uk:'Продовжити без реєстрації →',be:'Працягнуць без рэгістрацыі →'},
+  sending:{pl:'Wysyłanie…',en:'Sending…',ja:'送信中…',uk:'Надсилання…',be:'Адпраўка…'},
+  waiting:{pl:'Przyjmujemy rezerwację…',en:'Recording your reservation…',ja:'ご予約を登録しています…',uk:'Реєструємо бронювання…',be:'Рэгіструем браніраванне…'},
+  waitingLong:{pl:'Jeszcze chwila — prosimy nie zamykać tej strony.',en:'Almost there — please keep this page open.',ja:'もう少しお待ちください。この画面は閉じないでください。',uk:'Ще трохи — не закривайте цю сторінку.',be:'Яшчэ крыху — не закрывайце гэту старонку.'},
+  okTitle:{pl:'Dziękujemy! Rezerwacja przyjęta.',en:'Thank you! Reservation received.',ja:'ありがとうございます。ご予約を承りました。',uk:'Дякуємо! Бронювання прийнято.',be:'Дзякуй! Браніраванне прынята.'},
+  okMail:{pl:'Potwierdzenie wysłaliśmy e-mailem. Numer rezerwacji:',en:'A confirmation email is on its way. Reservation number:',ja:'確認メールをお送りしました。ご予約番号：',uk:'Підтвердження надіслано на e-mail. Номер бронювання:',be:'Пацвярджэнне дасланае на e-mail. Нумар бранiравання:'},
+  okSlow:{
+    pl:'Numer rezerwacji wyślemy e-mailem w ciągu kilku minut. Jeśli e-mail nie dotrze, prosimy o telefon: (+48) 693 865 271',
+    en:'Your reservation number will arrive by email within a few minutes. If it does not, please call: (+48) 693 865 271',
+    ja:'ご予約番号は数分以内に確認メールでお送りします。メールが届かない場合はお電話ください：(+48) 693 865 271',
+    uk:'Номер бронювання надішлемо на e-mail протягом кількох хвилин. Інакше зателефонуйте: (+48) 693 865 271',
+    be:'Нумар дашлём на e-mail на працягу некалькіх хвілін. Інакш патэлефануйце: (+48) 693 865 271'},
+  okMember:{pl:'⭐ Dziękujemy za stałą wierność!',en:'⭐ Thank you for your continued support!',ja:'⭐ 毎度、ご愛顧ありがとうございます。',uk:'⭐ Дякуємо за вірність!',be:'⭐ Дзякуй за вернасць!'},
+  okGuest:{pl:'W e-mailu znajdziesz też zaproszenie do Wabi Navi Club.',en:'The email also includes an invitation to the Wabi Navi Club.',ja:'メールには会員登録のご案内も同封しています。',uk:'У листі також запрошення до клубу.',be:'У лісце таксама запрашэнне ў клуб.'},
+  errNet:{
+    pl:'Nie udało się wysłać. Sprawdź połączenie lub zadzwoń: (+48) 693 865 271',
+    en:'Could not send. Please check your connection or call: (+48) 693 865 271',
+    ja:'送信できませんでした。通信状態をご確認いただくか、お電話ください：(+48) 693 865 271',
+    uk:'Не вдалося надіслати. Зателефонуйте: (+48) 693 865 271',
+    be:'Не атрымалася адправіць. Патэлефануйце: (+48) 693 865 271'},
+  monday:{
+    pl:'Poniedziałek — nieczynne. Prosimy wybrać inny dzień.',
+    en:'Closed on Mondays. Please choose another day.',
+    ja:'月曜日は定休日です。別の日をお選びください。',
+    uk:'У понеділок зачинено. Оберіть, будь ласка, інший день.',
+    be:'У панядзелак зачынена. Абярыце, калі ласка, іншы дзень.'}
+};
+function t(k){ return (T[k] && (T[k][currentLang] || T[k].pl)) || ''; }
+
+function setLang(lang, btn){
+  currentLang = lang;
+  var bs = document.querySelectorAll('.lang-bar button');
+  for (var i = 0; i < bs.length; i++) bs[i].classList.remove('active');
+  if (btn) btn.classList.add('active');
+  var els = document.querySelectorAll('[data-' + lang + ']');
+  for (var j = 0; j < els.length; j++) els[j].textContent = els[j].getAttribute('data-' + lang);
+  var dw = document.getElementById('dayWarn');
+  if (dw && !dw.hidden) showDayWarn();   // 表示中なら選択言語の行を差し替える
+  renderMemberBanner();
+}
+
+function esc(x){
+  return String(x == null ? '' : x).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+/* ── 時間の選択肢：金・土だけ21:30まで ─────────────────────────── */
+function buildTimeOptions(dow){
+  var sel = document.getElementById('timeSelect');
+  var keep = sel.value;
+  sel.innerHTML = '<option value="">--</option>';
+  var isFriSat = (dow === 5 || dow === 6);
+  var last = isFriSat ? 21.5 : 19.5;
+  for (var h = 13; h <= last; h += 0.25){
+    var hh = Math.floor(h), mm = Math.round((h - hh) * 60);
+    var v = ('0' + hh).slice(-2) + ':' + ('0' + mm).slice(-2);
+    var o = document.createElement('option');
+    o.value = v; o.textContent = v;
+    sel.appendChild(o);
+  }
+  if (keep) sel.value = keep;
+}
+
+/* 月曜を選んだときの案内。ネイティブの alert は1言語しか出せないうえ、
+   OSの言語で「OK」が出て戸惑わせるため、画面内に PL/EN 併記で表示する。
+   言語バーで ja/uk/be を選んでいる場合は、その言語も1行足す。 */
+function showDayWarn(){
+  var box = document.getElementById('dayWarn');
+  if (!box) return;
+  var lines = ['<b>' + esc(T.monday.pl) + '</b>', '<span>' + esc(T.monday.en) + '</span>'];
+  if (currentLang !== 'pl' && currentLang !== 'en'){
+    lines.push('<span>' + esc(t('monday')) + '</span>');
+  }
+  box.innerHTML = lines.join('');
+  box.hidden = false;
+}
+
+function hideDayWarn(){
+  var box = document.getElementById('dayWarn');
+  if (box) box.hidden = true;
+}
+
+function updateDayOfWeek(){
+  var el = document.getElementById('reservDate');
+  if (!el.value){ hideDayWarn(); return; }
+  var d = new Date(el.value + 'T00:00:00');
+  if (d.getDay() === 1){
+    showDayWarn();
+    el.value = '';
+    buildTimeOptions(-1);
+    try { el.focus({preventScroll:true}); } catch(e){}
+    return;
+  }
+  hideDayWarn();
+  buildTimeOptions(d.getDay());
+}
+
+/* ── 会員照合 ────────────────────────────────────────────────── */
+var lastCheckedEmail = '', isMemberCached = null, guestNoticeDismissed = false, cmTimer = null;
+
+function checkMemberDebounced(){
+  if (!SHOW_MEMBER_FEATURES) return;
+  clearTimeout(cmTimer);
+  cmTimer = setTimeout(checkMember, 700);
+}
+
+function applyMemberFieldRules(){
+  var isMember = (isMemberCached === true);
+  var nm = document.getElementById('resName');
+  var ph = document.getElementById('resPhone');
+  var nt = document.getElementById('nameNote');
+  if (!nm) return;
+
+  // 会員と確認できたら氏名は任意（会員台帳から補完される）
+  if (isMember){
+    nm.required = false;
+    nm.removeAttribute('required');       // 属性そのものを外す（保険）
+  } else {
+    nm.required = true;
+    nm.setAttribute('required', '');
+  }
+
+  var optLabel = isMember ? '— opcjonalne / optional' : 'Jan Kowalski';
+  nm.placeholder = optLabel;
+  if (ph) ph.placeholder = isMember ? '— opcjonalne / optional' : '+48 000 000 000';
+
+  var nameReq = document.getElementById('nameReq');
+  var nameOpt = document.getElementById('nameOpt');
+  if (nameReq) nameReq.classList.toggle('hide', isMember);
+  if (nameOpt) nameOpt.classList.toggle('show', isMember);
+
+  if (nt) nt.style.display = isMember ? 'block' : 'none';
+}
+
+function renderMemberBanner(){
+  var box = document.getElementById('memberBanner');
+  if (!box) return;
+  var prompt = document.getElementById('memberPrompt');
+  if (prompt) prompt.classList.toggle('hidden', !SHOW_MEMBER_FEATURES || isMemberCached !== null);
+  applyMemberFieldRules();
+  if (!SHOW_MEMBER_FEATURES){ box.style.display = 'none'; return; }
+  if (isMemberCached === null){ box.style.display = 'none'; return; }
+  if (isMemberCached === false && guestNoticeDismissed){ box.style.display = 'none'; return; }
+  box.style.display = 'block';
+
+  if (isMemberCached === 'checking'){
+    box.className = 'member-banner checking';
+    box.textContent = t('checking');
+    return;
+  }
+  if (isMemberCached === true){
+    box.className = 'member-banner is-member';
+    box.innerHTML = '<span class="mb-title"></span><span class="mb-body"></span>';
+    box.querySelector('.mb-title').textContent = t('memberTitle');
+    box.querySelector('.mb-body').textContent  = t('memberBody');
+    return;
+  }
+  box.className = 'member-banner is-guest';
+  box.innerHTML = '<span class="mb-title"></span><span class="mb-body"></span>' +
+                  '<div class="mb-actions"><a class="mb-cta" target="_blank" rel="noopener"></a>' +
+                  '<button type="button" class="mb-skip"></button></div>';
+  box.querySelector('.mb-title').textContent = t('guestTitle');
+  box.querySelector('.mb-body').textContent  = t('guestBody');
+  var a = box.querySelector('.mb-cta');
+  a.textContent = t('guestCta'); a.href = REGISTER_URL;
+  var s = box.querySelector('.mb-skip');
+  s.textContent = t('guestSkip');
+  s.onclick = skipRegistration;
+}
+
+function skipRegistration(){
+  guestNoticeDismissed = true;
+  document.getElementById('memberBanner').style.display = 'none';
+  var nm = document.getElementById('resName');
+  if (!nm) return;
+  try { nm.scrollIntoView({behavior:'smooth', block:'center'}); } catch(e){ nm.scrollIntoView(); }
+  setTimeout(function(){ try { nm.focus({preventScroll:true}); } catch(e){ nm.focus(); } }, 250);
+}
+
+function checkMember(){
+  if (!SHOW_MEMBER_FEATURES) return;
+  var el = document.getElementById('resEmail');
+  if (!el) return;
+  var email = el.value.trim();
+  if (!email || email.indexOf('@') < 1){ isMemberCached = null; renderMemberBanner(); return; }
+  if (email === lastCheckedEmail) return;
+  lastCheckedEmail = email;
+  isMemberCached = 'checking';
+  renderMemberBanner();
+
+  fetch(GAS_URL + '?action=checkMember&email=' + encodeURIComponent(email))
+    .then(function(r){ return r.json(); })
+    .then(function(j){
+      isMemberCached = (j && j.status === 'ok') ? !!j.isMember : null;
+      renderMemberBanner();
+    })
+    .catch(function(){ isMemberCached = null; renderMemberBanner(); });
+}
+
+/* ── 送信 ────────────────────────────────────────────────────── */
+var resTimers = [], resProvisional = false;
+function clearResTimers(){ resTimers.forEach(function(id){ clearTimeout(id); }); resTimers = []; }
+
+function showPending(msg){
+  var r = document.getElementById('resResult');
+  r.className = 'result pending';
+  r.style.display = 'block';
+  r.innerHTML = '<span class="spinner"></span>' + esc(msg);
+}
+
+function btnLabel(){
+  var b = document.querySelector('.btn-submit');
+  return (b && b.getAttribute('data-' + currentLang)) || 'Wyślij prośbę o rezerwację';
+}
+
+function showError(msg, btn){
+  var r = document.getElementById('resResult');
+  var form = document.getElementById('reservationForm');
+  if (resProvisional && form) form.style.display = '';
+  resProvisional = false;
+  r.className = 'result error';
+  r.style.display = 'block';
+  r.textContent = msg;
+  btn.disabled = false;
+  btn.textContent = btnLabel();
+}
+
+function submitReservation(e){
+  if (e && e.preventDefault) e.preventDefault();
+  var form   = document.getElementById('reservationForm');
+  var btn    = form.querySelector('.btn-submit');
+  var result = document.getElementById('resResult');
+  var dateVal = document.getElementById('reservDate').value;
+
+  if (dateVal){
+    var d = new Date(dateVal + 'T00:00:00');
+    if (d.getDay() === 1){
+      showDayWarn();
+      try { document.getElementById('reservDate').scrollIntoView({behavior:'smooth', block:'center'}); } catch(err){}
+      return false;
+    }
+  }
+
+  var payload = {
+    action:'webReservation',
+    email:   document.getElementById('resEmail').value.trim(),
+    name:    document.getElementById('resName').value.trim(),
+    phone:   document.getElementById('resPhone').value.trim(),
+    date:    dateVal,
+    time:    document.getElementById('timeSelect').value,
+    guests:  document.getElementById('resGuests').value,
+    comment: document.getElementById('resComment').value.trim(),
+    gdpr:    document.getElementById('resGdpr').checked,
+    promo:   document.getElementById('resPromo').checked,
+    hp:      document.getElementById('resHp').value,
+    lang:    currentLang
+  };
+
+  btn.disabled = true;
+  btn.textContent = t('sending');
+  clearResTimers();
+  resProvisional = false;
+  showPending(t('sending'));
+  try { result.scrollIntoView({behavior:'smooth', block:'center'}); } catch(err){}
+
+  resTimers.push(setTimeout(function(){ showPending(t('waiting')); }, 2500));
+  resTimers.push(setTimeout(function(){ showPending(t('waitingLong')); }, 9000));
+  resTimers.push(setTimeout(function(){
+    resProvisional = true;
+    form.style.display = 'none';
+    document.getElementById('memberBanner').style.display = 'none';
+    result.className = 'result';
+    result.style.display = 'block';
+    result.innerHTML = '<strong>' + esc(t('okTitle')) + '</strong><br>' + esc(t('okSlow'));
+  }, 20000));
+
+  fetch(GAS_URL, {
+    method:'POST',
+    headers:{ 'Content-Type':'text/plain;charset=utf-8' },
+    body: JSON.stringify(payload)
+  })
+  .then(function(r){ return r.json(); })
+  .then(function(j){
+    clearResTimers();
+    if (j && j.status === 'ok'){
+      form.style.display = 'none';
+      document.getElementById('memberBanner').style.display = 'none';
+      document.getElementById('memberPrompt').classList.add('hidden');
+      result.className = 'result';
+      result.style.display = 'block';
+      result.innerHTML =
+        '<strong>' + esc(t('okTitle')) + '</strong><br>' +
+        esc(t('okMail')) + ' <span class="rr-id">' + esc(j.id) + '</span>' +
+        (SHOW_MEMBER_FEATURES
+          ? '<br><br>' + esc(j.isMember ? t('okMember') : t('okGuest'))
+          : '');
+    } else if (j && j.status === 'duplicate'){
+      result.className = 'result';
+      result.style.display = 'block';
+      result.textContent = j.message;
+      btn.disabled = false; btn.textContent = btnLabel();
+    } else {
+      showError((j && j.message) || t('errNet'), btn);
+    }
+  })
+  .catch(function(){ clearResTimers(); showError(t('errNet'), btn); });
+
+  return false;
+}
+
+/* ── 初期化 ──────────────────────────────────────────────────── */
+(function init(){
+  var di = document.getElementById('reservDate');
+  var today = new Date();
+  var iso = today.getFullYear() + '-' + ('0'+(today.getMonth()+1)).slice(-2) + '-' + ('0'+today.getDate()).slice(-2);
+  di.min = iso;
+  if (today.getDay() !== 1) { di.value = iso; buildTimeOptions(today.getDay()); }
+  else { buildTimeOptions(-1); }
+  setLang('pl', document.querySelector('.lang-bar button'));
+})();
+</script>
+</body>
+</html>

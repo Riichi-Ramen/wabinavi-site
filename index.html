@@ -1,0 +1,943 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WABI NAVI – Japanese Ramen Bar, Toruń</title>
+<meta name="description" content="Japońska restauracja ramen w sercu Torunia. Prowadzona przez Japończyków.">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --ink:#1a1208;
+  --red:#c0392b;
+  --gold:#b7860b;
+  --sand:#f9f4eb;
+  --band:#efe7d8;   /* 帯の背景（和紙色）。色を変えるならここ1行 */
+  --stone:#e0d8c8;
+  --text:#2c2416;
+  --muted:#7a6e5e;
+  --white:#ffffff;
+}
+html{scroll-behavior:smooth}
+body{font-family:"Inter",sans-serif;color:var(--text);background:var(--white)}
+
+/* LANG BAR */
+.lang-bar{background:#f5f0e8;border-bottom:1px solid var(--stone);display:flex;justify-content:flex-end;padding:0 2rem}
+.lang-bar button{background:none;border:none;border-bottom:2px solid transparent;color:#666;font-size:11px;padding:7px 10px;cursor:pointer;letter-spacing:.08em;font-family:"Inter",sans-serif;transition:color .2s,border-color .2s}
+.lang-bar button.active{color:var(--red);border-bottom-color:var(--red);font-weight:500}
+
+/* NAV - 白背景 */
+nav{background:#ffffff;border-bottom:3px solid #c0392b;border-bottom:3px solid var(--red);display:flex;align-items:center;justify-content:space-between;padding:.5rem clamp(1.2rem,6vw,7rem)}
+.nav-logo{display:flex;align-items:center;gap:12px}.nav-logo img{height:60px;width:auto;display:block}
+.nav-links{display:flex;gap:1.5rem;list-style:none;align-items:center}
+.nav-links a{color:#333333;text-decoration:none;font-size:12px;letter-spacing:.1em;text-transform:uppercase;font-weight:500}
+.nav-links a:hover{color:var(--red)}
+.nav-links a.cta{background:var(--red);color:#fff;padding:9px 20px;border-radius:2px}
+.nav-links a.cta:hover{background:#a93226;color:#fff}
+.hamburger{display:none !important;flex-direction:column;gap:5px;cursor:pointer;padding:4px}
+.hamburger span{display:block;width:22px;height:2px;background:#333}
+.mobile-menu{display:none;flex-direction:column;background:#fff;padding:1rem 2rem 1.5rem;gap:1rem;border-bottom:3px solid var(--red)}
+.mobile-menu a{color:#333;text-decoration:none;font-size:13px;letter-spacing:.1em;text-transform:uppercase}
+.mobile-menu a.cta{color:var(--red);font-weight:500}
+
+/* HERO */
+.hero{position:relative;height:90vh;min-height:520px;max-height:800px;display:flex;align-items:flex-end;overflow:hidden}
+.hero-img{position:absolute;inset:0;background-image:url("images/index-img.jpg");background-size:cover;background-position:center 30%}
+.hero-overlay{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(26,18,8,.05) 0%,rgba(26,18,8,.55) 50%,rgba(26,18,8,.92) 100%)}
+.hero-content{position:relative;z-index:1;padding:0 2.5rem 3.5rem;max-width:640px;width:100%}
+.hero-eyebrow{font-size:clamp(17px,3vw,28px);letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-bottom:.4rem;white-space:nowrap}.hero-en-sub{font-size:13px;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.5);margin-bottom:.75rem;font-weight:400}
+.hero-jp-catch{font-family:"Noto Serif JP",serif;font-size:clamp(18px,2.5vw,28px);color:#d4c9b0;letter-spacing:.08em;margin-bottom:.4rem;line-height:1.3}.hero-title{font-family:"Inter",sans-serif;font-weight:300;font-size:clamp(32px,6vw,100px);color:var(--sand);line-height:1.05;margin-bottom:.75rem;letter-spacing:.02em;white-space:nowrap}
+.hero-title span{font-size:clamp(52px,7vw,100px);color:#c0b8a8;display:block;margin-top:.25rem;line-height:1.1;font-family:"Inter",sans-serif;font-weight:300;letter-spacing:.02em}
+.hero-desc{margin-bottom:1.75rem}.hero-sub{font-size:16px;color:#ffffff;letter-spacing:.02em;margin-bottom:.2rem;line-height:1.5;text-shadow:0 1px 8px rgba(0,0,0,.8),0 0 24px rgba(0,0,0,.6);font-weight:400;display:block}
+.hero-actions{display:flex;gap:1rem;align-items:center;flex-wrap:wrap}
+.btn-primary{background:var(--red);color:#fff;text-decoration:none;padding:13px 30px;font-size:12px;letter-spacing:.1em;text-transform:uppercase;border-radius:2px;display:inline-block}
+.btn-primary:hover{background:#a93226}
+.btn-ghost{color:var(--sand);text-decoration:none;font-size:12px;letter-spacing:.12em;border-bottom:1px solid rgba(249,244,235,.4);padding-bottom:2px}
+
+/* HOURS */
+.hours-strip{background:var(--sand);display:flex;align-items:center;padding:.9rem 2.5rem;gap:1.5rem;border-bottom:1px solid var(--stone);flex-wrap:wrap}
+.hours-label{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);font-weight:500;white-space:nowrap}
+.hours-dot{width:7px;height:7px;border-radius:50%;background:#27ae60;flex-shrink:0}
+.hours-text{font-size:12px;color:var(--muted);letter-spacing:.03em;line-height:1.8}
+.hours-text strong{color:var(--text);font-weight:500}
+
+/* SECTIONS */
+.section{padding:4rem 2.5rem}
+.section-alt{background:#333333}
+.section-header{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:2.5rem}
+.section-title{font-family:"Noto Serif JP",serif;font-size:clamp(22px,3vw,30px);color:var(--ink)}
+.section-link{font-size:11px;letter-spacing:.12em;color:var(--red);text-decoration:none;text-transform:uppercase;border-bottom:1px solid var(--red);padding-bottom:1px;white-space:nowrap}
+.divider-red{height:3px;background:var(--red);width:36px;margin-bottom:1.25rem}
+
+/* RAMEN GRID */
+.ramen-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem}
+.ramen-card{position:relative;overflow:hidden;cursor:pointer}
+.ramen-card img{width:100%;aspect-ratio:3/4;object-fit:cover;display:block;transition:transform .4s}
+.ramen-card:hover img{transform:scale(1.04)}
+.ramen-label{position:absolute;bottom:0;left:0;right:0;padding:2rem 1rem 1rem;background:linear-gradient(to top,rgba(26,18,8,.92) 0%,transparent 100%)}
+.ramen-name{font-family:"Noto Serif JP",serif;color:var(--sand);font-size:15px;letter-spacing:.05em}
+.ramen-desc{font-size:11px;color:#a09080;margin-top:3px}
+.tag{display:inline-block;background:var(--red);color:#fff;font-size:9px;padding:2px 8px;letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px}
+.tag-green{background:#1e7a45}
+
+/* SIDES */
+.sides-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem}
+.side-card img{width:100%;aspect-ratio:1/1;object-fit:cover;display:block}
+.side-card-name{font-size:12px;color:var(--text);margin-top:.5rem;font-weight:500}
+.side-card-desc{font-size:11px;color:var(--muted);margin-top:2px}
+
+/* PHILOSOPHY */
+.philosophy{background:var(--band);padding:3.5rem 2rem;display:grid;grid-template-columns:auto repeat(3,1fr) auto;align-items:center}
+.philo-item{padding:0 2rem;border-right:1px solid rgba(44,36,22,.14);text-align:center}
+.philo-item:first-child{padding-left:0}
+.philo-item:last-child{border-right:none;padding-right:0}
+.philo-kanji{font-family:"Noto Serif JP",serif;font-size:42px;color:#9a6f08;display:block;margin-bottom:.5rem;line-height:1}
+.philo-en{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:#8a7c66;margin-bottom:.5rem}
+.philo-desc{font-size:12px;color:var(--text);line-height:1.8}
+
+/* ABOUT / O NAS */
+.about{background:var(--white);padding:4.5rem 2.5rem 3.5rem}
+.about-inner{max-width:820px;margin:0 auto}
+.about-head{display:flex;align-items:center;gap:1rem;margin-bottom:1.75rem}
+.about-head .divider-red{margin-bottom:0;flex:none}
+.about-title{font-family:"Noto Serif JP",serif;font-size:clamp(22px,3vw,30px);color:var(--ink);letter-spacing:.04em}
+.about-lead{font-size:15px;line-height:2;color:var(--text);margin-bottom:1.35rem}
+.about-lead strong{font-weight:500}
+.about-body{font-size:13.5px;line-height:2.1;color:#5f5443;margin-bottom:1.1rem}
+.about-body:last-child{margin-bottom:0}
+.about-sign{margin-top:2rem;padding-top:1.5rem;border-top:1px solid var(--stone);
+  display:flex;align-items:center;gap:1rem;flex-wrap:wrap}
+.about-sign img{height:44px;width:auto;opacity:.9}
+.about-sign span{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold)}
+
+/* RESERVATION */
+.reservation{display:grid;grid-template-columns:1fr 1fr;gap:4rem;padding:4rem 2.5rem;align-items:start}
+.res-title{font-family:"Noto Serif JP",serif;font-size:clamp(22px,3vw,30px);color:var(--ink);margin-bottom:.75rem;line-height:1.2}
+.res-intro{font-size:13px;color:var(--muted);line-height:1.9;margin-bottom:1.75rem}
+.res-phone{display:flex;align-items:center;gap:.75rem;margin-bottom:1rem}
+.res-phone-icon{width:38px;height:38px;background:var(--red);border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;flex-shrink:0}
+.res-phone-num{font-size:18px;font-weight:500;color:var(--ink)}
+.res-phone-label{font-size:10px;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;line-height:1.6;margin-top:2px}
+.res-address{font-size:12px;color:var(--muted);line-height:1.8;margin-top:1rem}
+.res-address a{color:var(--red);text-decoration:none}
+form .form-group{margin-bottom:.875rem}
+form label{display:block;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:5px}
+form input,form select{width:100%;padding:10px 14px;border:1px solid var(--stone);background:#fff;font-size:13px;font-family:"Inter",sans-serif;color:var(--text);border-radius:0;outline:none;transition:border-color .2s}
+form input:focus,form select:focus{border-color:var(--red)}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}
+.btn-submit{width:100%;background:var(--ink);color:var(--sand);border:none;padding:14px;font-size:11px;letter-spacing:.16em;text-transform:uppercase;cursor:pointer;font-family:"Inter",sans-serif;margin-top:.5rem}
+.btn-submit:hover{background:#2c2010}
+.form-note{font-size:11px;color:var(--muted);margin-top:.75rem;text-align:center}
+
+/* MAP */
+.map-strip{background:var(--ink);padding:2rem 2.5rem;display:flex;align-items:center;justify-content:space-between;gap:2rem;flex-wrap:wrap}
+.map-info{color:#c0b8a8;font-size:13px;line-height:1.9}
+.map-info strong{color:var(--sand);font-weight:500}
+.map-btn{background:transparent;border:1px solid rgba(249,244,235,.25);color:var(--sand);text-decoration:none;padding:10px 22px;font-size:11px;letter-spacing:.12em;text-transform:uppercase;white-space:nowrap}
+.map-btn:hover{border-color:var(--sand)}
+
+/* FOOTER */
+footer{background:#100c06;padding:2rem 2.5rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem}
+.footer-logo img{height:48px;width:auto;display:block}
+.footer-right{text-align:right}
+.footer-links{display:flex;gap:1rem;justify-content:flex-end;margin-bottom:.5rem}
+.footer-links a{color:#7a6e5e;font-size:11px;text-decoration:none;letter-spacing:.06em}
+.footer-links a:hover{color:var(--sand)}
+.footer-copy{font-size:10px;color:#4a4238;letter-spacing:.08em}
+
+/* RESPONSIVE */
+@media(max-width:768px){
+  .nav-links{display:none}
+  .hamburger{display:flex}
+  .mobile-menu.open{display:flex}
+  .ramen-grid{grid-template-columns:repeat(2,1fr)}
+  .sides-grid{grid-template-columns:repeat(2,1fr)}
+  .philosophy{grid-template-columns:1fr;gap:2rem}
+  .philo-item{border-right:none;border-bottom:1px solid rgba(44,36,22,.14);padding:0 0 2rem}
+  .philo-item:last-child{border-bottom:none;padding-bottom:0}
+  .reservation{grid-template-columns:1fr;gap:2rem}
+  .section,.section-alt,.reservation{padding:3rem 1.25rem}
+  .map-strip{padding:2rem 1.25rem}
+  footer{padding:2rem 1.25rem}
+  .hero-content{padding:0 1.25rem 2.5rem;max-width:100%}
+}
+@media(max-width:480px){
+  .ramen-grid{grid-template-columns:1fr}
+}
+
+/* === 会員連動バナー / Baner członkowski (v6.9) === */
+.philo-mark{display:flex;align-items:center;justify-content:center;padding:0 .5rem}
+.philo-mark img{height:74px;width:auto;opacity:.95}
+@media(max-width:1100px){.philo-mark{display:none}}
+.member-prompt{display:flex;gap:.6rem;align-items:flex-start;margin:0 0 1.1rem;
+  padding:.8rem .95rem;background:#fdf6e3;border-left:3px solid var(--gold);
+  border-radius:3px;font-size:12.5px;line-height:1.6;color:#5c4708}
+.member-prompt.hidden{display:none}
+.member-prompt .mp-ico{flex:none;font-size:15px;line-height:1.3}
+.member-prompt b{font-weight:600}
+.member-banner{display:none;margin:0 0 1rem;padding:.85rem 1rem;border-radius:3px;font-size:12.5px;line-height:1.6}
+.member-banner.checking{background:#f5f0e8;border-left:3px solid var(--stone);color:var(--muted)}
+.member-banner.is-member{background:#fdf6e3;border-left:3px solid var(--gold);color:#5c4708}
+.member-banner.is-guest{background:#f7f4ef;border-left:3px solid var(--red);color:var(--text)}
+.member-banner .mb-title{font-weight:500;display:block;margin-bottom:.25rem}
+.member-banner .mb-cta{display:inline-block;margin-top:.5rem;background:var(--red);color:#fff;
+  text-decoration:none;padding:7px 14px;border-radius:2px;font-size:11px;letter-spacing:.06em}
+.member-banner .mb-cta:hover{background:#a93226}
+.member-banner .mb-actions{display:flex;flex-wrap:wrap;align-items:center;gap:.5rem;margin-top:.7rem}
+.member-banner .mb-actions .mb-cta{margin-top:0}
+.member-banner .mb-skip{background:none;border:1px solid var(--stone);color:var(--muted);
+  padding:7px 14px;border-radius:2px;font-size:11px;letter-spacing:.06em;cursor:pointer;
+  font-family:"Inter",sans-serif;transition:border-color .2s,color .2s}
+.member-banner .mb-skip:hover{border-color:var(--red);color:var(--red)}
+.res-result.pending{background:#f5f0e8;border-left-color:var(--gold);color:#5c4708}
+.rr-spinner{display:inline-block;width:13px;height:13px;border:2px solid rgba(183,134,11,.28);
+  border-top-color:var(--gold);border-radius:50%;margin-right:.55rem;vertical-align:-2px;
+  animation:rr-spin .8s linear infinite}
+@keyframes rr-spin{to{transform:rotate(360deg)}}
+@media(prefers-reduced-motion:reduce){.rr-spinner{animation-duration:2.4s}}
+.res-result{display:none;padding:1.25rem;border-radius:3px;background:#f0f7f2;
+  border-left:3px solid #1e7a45;font-size:13px;line-height:1.7;color:#1a4a2e}
+.res-result.error{background:#fdf2f0;border-left-color:var(--red);color:#8a2a1d}
+.res-result .rr-id{font-family:monospace;font-size:15px;font-weight:700;letter-spacing:.05em}
+.hp-field{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+.res-note-small{font-size:11px;color:var(--muted);margin-top:.4rem;line-height:1.5}
+
+/* ── スマホ最適化（v6.9）────────────────────────── */
+@media(max-width:768px){
+  nav{padding:.4rem 1.1rem}
+  .nav-logo img{height:56px!important}
+  .philosophy{padding:2.5rem 1.5rem}
+  .about{padding:3rem 1.25rem 2.25rem}
+  .about-lead{font-size:14.5px;line-height:1.95}
+  .about-body{font-size:13.5px;line-height:1.95}
+  .philo-kanji{font-size:36px}
+  .philo-desc{font-size:13px}
+  .member-prompt,.member-banner{font-size:13px;padding:.85rem .9rem}
+  .form-row{grid-template-columns:1fr!important;gap:0 .75rem}
+  .btn-submit{padding:16px;font-size:13px}
+  input,select,textarea{font-size:16px!important}   /* iOSの自動ズーム防止 */
+  .res-title{font-size:clamp(24px,7vw,34px)}
+}
+@media(max-width:480px){
+  .nav-logo img{height:48px!important}
+  nav{padding:.35rem .9rem}
+  .philosophy{padding:2rem 1.1rem}
+  .hours-strip{font-size:11px;padding:.7rem 1rem;text-align:center}
+}
+</style>
+</head>
+<body>
+
+<div class="lang-bar">
+  <button class="active" onclick="setLang('pl',this)">PL</button>
+  <button onclick="setLang('en',this)">EN</button>
+  <button onclick="setLang('uk',this)">УК</button>
+  <button onclick="setLang('be',this)">БЕ</button>
+  <button onclick="setLang('ja',this)">日本語</button>
+</div>
+
+<nav>
+  <div class="nav-logo">
+    <img src="images/logo-main.png" alt="Wabi Navi" style="height:84px;width:auto;display:block;">
+  </div>
+  <ul class="nav-links">
+    <li><a href="menu.html" data-pl="Menu" data-en="Menu" data-ja="メニュー" data-uk="Меню" data-be="Меню">Menu</a></li>
+    <li><a href="gallery.html" data-pl="Galeria" data-en="Gallery" data-ja="ギャラリー" data-uk="Галерея" data-be="Галерэя">Galeria</a></li>
+    <li><a href="#onas" data-pl="O nas" data-en="About" data-ja="私たちについて" data-uk="Про нас" data-be="Пра нас">O nas</a></li>
+    <li data-club="1"><a href="https://riichi-ramen.github.io/wabinavi-order/card.html" data-pl="Klub" data-en="Club" data-ja="会員" data-uk="Клуб" data-be="Клуб">Klub</a></li>
+    <li><a href="#rezerwacja" class="cta" data-pl="Rezerwacja" data-en="Reserve" data-ja="ご予約" data-uk="Бронювання" data-be="Браніраванне">Rezerwacja</a></li>
+  </ul>
+  <div class="hamburger" onclick="toggleMenu()">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+<div class="mobile-menu" id="mobile-menu">
+  <a href="#menu" onclick="toggleMenu()">Menu</a>
+  <a href="#onas" onclick="toggleMenu()">O nas / About</a>
+  <a data-club="1" href="https://riichi-ramen.github.io/wabinavi-order/card.html">Klub / 会員カード</a>
+  <a data-club="1" href="https://riichi-ramen.github.io/wabinavi-order/stamp.html">Rejestracja / 新規登録</a>
+  <a href="#rezerwacja" class="cta" onclick="toggleMenu()">Rezerwacja / Reserve</a>
+</div>
+
+<section class="hero">
+  <div class="hero-img"></div>
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <p class="hero-eyebrow" data-pl="KUCHNIA JAPOŃSKA · STARE MIASTO TORUNIA" data-en="Japanese restaurant · Old Town Toruń" data-ja="日本料理店｜トルン旧市街" data-uk="ЯПОНСЬКА КУХНЯ · СТАРЕ МІСТО ТОРУНЯ" data-be="ЯПОНСКАЯ КУХНЯ · СТАРЫ ГОРАД ТОРУНЯ" >KUCHNIA JAPOŃSKA · STARE MIASTO TORUNIA</p>
+    <p class="hero-en-sub" data-uk="Японський рамен-бар • Торунь, Польща" data-be="JAPANESE RAMEN BAR · TORUŃ, POLAND" data-ja="Japanese Ramen Bar · Toruń, Poland">Japanese Ramen Bar · Toruń, Poland</p>
+    <p class="hero-jp-catch" data-ja="和の美を、そっと一椀に。" data-uk="Краса Японії, дбайливо втілена в одній мисці." data-be="Прыгажосць Японіі, далікатна ўвасобленая ў адной місцы." >こだわりの麺、至福の一杯</p><h1 class="hero-title" data-pl="Miska pełna szczęścia." data-en="Ramen with soul." data-ja="至福の一杯。" data-uk="Миска справжньої насолоди." data-be="Міска сапраўднай асалоды." >Miska pełna szczęścia.</h1>
+    <div class="hero-desc">
+      <p class="hero-sub" data-pl="Bulion, który z każdą chwilą nabiera głębi." data-en="Japanese Chef · Handmade noodles" data-ja="ことこと、深まる旨み。" data-uk="Бульйон, у якому смак стає глибшим." data-be="Булён, смак якога становіцца ўсё глыбейшым." >Bulion, który z każdą chwilą nabiera głębi.</p>
+      <p class="hero-sub" data-pl="Sprężysty, delikatny. Szef kuchni z Japonii • Ręcznie robiony makaron." data-en="Broth simmered for hours" data-ja="つるり、もちっと。手打ち麺。" data-uk="Пружна, ніжна. Шеф-кухар з Японії • Локшина ручної роботи." data-be="Пругкая, далікатная. Шэф-кухар з Японіі • Локшына ручной работы." >Sprężysty, delikatny. Szef kuchni z Japonii • Ręcznie robiony makaron.</p>
+    </div>
+    <div class="hero-actions">
+      <a href="#rezerwacja" class="btn-primary" data-pl="ZAREZERWUJ STOLIK" data-en="Reserve a table" data-ja="席を予約する" data-uk="ЗАБРОНЮВАТИ СТОЛИК" data-be="ЗАБРАНІРАВАЦЬ СТОЛІК" >Zarezerwuj stolik</a>
+      <a href="menu.html" class="btn-ghost" data-pl="Zobacz menu →" data-en="View menu →" data-ja="メニューを見る →" data-uk="Переглянути меню →" data-be="Паглядзець меню →" >Zobacz menu →</a>
+    </div>
+  </div>
+</section>
+
+<div class="hours-strip">
+  <span class="hours-label" data-pl="Godziny otwarcia" data-en="Opening hours" data-ja="営業時間">Godziny otwarcia</span>
+  <div class="hours-dot"></div>
+  <span class="hours-text">
+    <strong data-pl="Wt–Czw, Nd" data-en="Tue–Thu, Sun" data-ja="火–木、日">Wt–Czw, Nd</strong> 13:00–20:00
+    &nbsp;·&nbsp;
+    <strong data-pl="Pt–Sob" data-en="Fri–Sat" data-ja="金–土">Pt–Sob</strong> 13:00–22:00
+    &nbsp;·&nbsp;
+    <strong data-pl="Pon: nieczynne" data-en="Mon: closed" data-ja="月：定休日">Pon: nieczynne</strong>
+  </span>
+</div>
+
+<section class="section" id="menu">
+  <div class="section-header">
+    <div><div class="divider-red"></div>
+    <h2 class="section-title" data-pl="Nasze ramen" data-en="Our ramen" data-ja="ラーメン">Nasze ramen</h2></div>
+    <a href="#" class="section-link" data-pl="Pełne menu →" data-en="Full menu →" data-ja="メニュー全体 →">Pełne menu →</a>
+  </div>
+  <div class="ramen-grid">
+    <div class="ramen-card"><img src="images/index-img-4.jpg" alt="Chashu Ramen">
+      <div class="ramen-label"><div class="tag">Bestseller</div>
+        <div class="ramen-name" data-pl="Chashu Ramen" data-en="Chashu Ramen" data-ja="チャーシュー麺">Chashu Ramen</div>
+        <div class="ramen-desc" data-pl="Wieprzowina duszona · Jajko marynowane" data-en="Braised pork · Marinated egg" data-ja="チャーシュー · 味付け玉子">Wieprzowina duszona · Jajko marynowane</div>
+      </div>
+    </div>
+    <div class="ramen-card"><img src="images/index-img-5.jpg" alt="Miso Ramen">
+      <div class="ramen-label">
+        <div class="ramen-name" data-pl="Miso Ramen" data-en="Miso Ramen" data-ja="味噌ラーメン">Miso Ramen</div>
+        <div class="ramen-desc" data-pl="Głęboki smak pasty miso" data-en="Rich fermented soybean paste" data-ja="発酵大豆の深い旨味">Głęboki smak pasty miso</div>
+      </div>
+    </div>
+    <div class="ramen-card"><img src="images/index-miso-ramen.jpg" alt="Seafood Ramen">
+      <div class="ramen-label">
+        <div class="ramen-name" data-pl="Seafood Ramen" data-en="Seafood Ramen" data-ja="シーフードラーメン">Seafood Ramen</div>
+        <div class="ramen-desc" data-pl="Krewetki · Małże · Bulion z owoców morza" data-en="Prawns · Mussels · Seafood broth" data-ja="海老 · 貝 · 海鮮スープ">Krewetki · Małże · Bulion z owoców morza</div>
+      </div>
+    </div>
+    <div class="ramen-card"><img src="images/index-img-6.jpg" alt="Assari Ramen">
+      <div class="ramen-label">
+        <div class="ramen-name" data-pl="Assari Ramen" data-en="Assari Ramen" data-ja="あっさりラーメン">Assari Ramen</div>
+        <div class="ramen-desc" data-pl="Lekki bulion · Delikatny smak" data-en="Light broth · Delicate flavour" data-ja="あっさりスープ · 上品な味わい">Lekki bulion · Delikatny smak</div>
+      </div>
+    </div>
+    <div class="ramen-card"><img src="images/index-img-7.jpg" alt="Tantanmen">
+      <div class="ramen-label">
+        <div class="ramen-name" data-pl="Tantanmen" data-en="Tantanmen" data-ja="担々麺">Tantanmen</div>
+        <div class="ramen-desc" data-pl="Ostry bulion sezamowy · Mielona wieprzowina" data-en="Spicy sesame broth · Ground pork" data-ja="ゴマ辛スープ · 挽肉">Ostry bulion sezamowy · Mielona wieprzowina</div>
+      </div>
+    </div>
+    <div class="ramen-card"><img src="images/index-img-8.jpg" alt="Kukurydziane">
+      <div class="ramen-label"><div class="tag tag-green" data-pl="Wegetariańskie" data-en="Vegetarian" data-ja="ベジタリアン">Wegetariańskie</div>
+        <div class="ramen-name" data-pl="Kukurydziane" data-en="Corn Ramen" data-ja="コーンラーメン">Kukurydziane</div>
+        <div class="ramen-desc" data-pl="Słodka kukurydza · Bulion warzywny" data-en="Sweet corn · Vegetable broth" data-ja="コーン · 野菜スープ">Słodka kukurydza · Bulion warzywny</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="about" id="onas">
+  <div class="about-inner">
+    <div class="about-head">
+      <div class="divider-red"></div>
+      <h2 class="about-title" data-pl="O nas" data-en="About us" data-ja="私たちについて" data-uk="Про нас" data-be="Пра нас">O nas</h2>
+    </div>
+
+    <p class="about-lead" data-pl="Wabi Navi 和美なび to japońska restauracja położona w samym sercu toruńskiej Starówki." data-en="Wabi Navi 和美なび is a Japanese restaurant located in the heart of Toruń's historic Old Town." data-ja="Wabi Navi 和美なびは、トルン旧市街にある日本食レストランです。" data-uk="Wabi Navi 和美なび — японський ресторан у самому серці історичного Старого міста Торуня." data-be="Wabi Navi 和美なび — японскі рэстаран у самым сэрцы гістарычнага Старога горада Торуня.">Wabi Navi 和美なび to japońska restauracja położona w samym sercu toruńskiej Starówki.</p>
+
+    <p class="about-body" data-pl="W lipcu 2017 roku trójka Japończyków połączyła siły, aby otworzyć pierwszy w Toruniu lokal specjalizujący się w rāmenie. Nazwa Wabi Navi jest połączeniem japońskiego pojęcia estetycznego „wabi-sabi” oraz słowa „navigation” – nawigacja. Wyraża naszą ideę odkrywania piękna i wartości w prostych, codziennych rzeczach." data-en="In July 2017, three Japanese friends joined forces to open Toruń's first restaurant specialising in ramen. The name Wabi Navi combines the Japanese aesthetic concept of “wabi-sabi” with the word “navigation”. It reflects our wish to help people discover beauty and richness in the simple things of everyday life." data-ja="2017年7月、3人の日本人が力を合わせ、市内初のラーメン専門店としてオープンしました。屋号は、日本の美意識「侘び寂び」と「ナビゲーション」を組み合わせた造語。日々の何気ないものの中にある美しさや豊かさを見つけてほしい、という思いを込めています。" data-uk="У липні 2017 року троє японців об'єднали свої зусилля, щоб відкрити перший у Торуні заклад, що спеціалізується на рамені. Назва Wabi Navi поєднує японське естетичне поняття «wabi-sabi» та слово «navigation» — навігація. У ній втілено наше бажання допомагати людям відкривати красу й цінність у простих речах повсякденного життя." data-be="У ліпені 2017 года трое японцаў аб'ядналі свае намаганні, каб адкрыць першы ў Торуні рэстаран, які спецыялізуецца на рамене. Назва Wabi Navi спалучае японскае эстэтычнае паняцце «wabi-sabi» і слова «navigation» — навігацыя. Яна адлюстроўвае наша жаданне дапамагаць людзям знаходзіць прыгажосць і каштоўнасць у простых рэчах паўсядзённага жыцця.">W lipcu 2017 roku trójka Japończyków połączyła siły, aby otworzyć pierwszy w Toruniu lokal specjalizujący się w rāmenie. Nazwa Wabi Navi jest połączeniem japońskiego pojęcia estetycznego „wabi-sabi” oraz słowa „navigation” – nawigacja. Wyraża naszą ideę odkrywania piękna i wartości w prostych, codziennych rzeczach.</p>
+
+    <p class="about-body" data-pl="Podstawą naszego rāmenu jest sprężysty makaron własnej produkcji oraz aromatyczny wywar przygotowywany przez wiele godzin. Oprócz różnych rodzajów rāmenu serwujemy również popularne japońskie dania i przekąski, takie jak gyōza czy takoyaki." data-en="Our ramen features firm, springy noodles made in-house and flavourful broths carefully prepared over many hours. Alongside a variety of ramen, we also serve familiar Japanese favourites such as gyoza and takoyaki." data-ja="コシのある自家製麺と、長時間かけて丁寧に仕込んだスープで作る各種ラーメンをはじめ、餃子やたこ焼きなど、親しみのある一品料理もご用意しています。" data-uk="Основою нашого рамену є пружна локшина власного виробництва та ароматний бульйон, який ми ретельно готуємо протягом багатьох годин. Окрім різних видів рамену, ми пропонуємо й популярні японські страви та закуски, зокрема ґьодза й такоякі." data-be="Аснова нашага рамена — пругкая локшына ўласнай вытворчасці і духмяны булён, які мы старанна гатуем на працягу многіх гадзін. Акрамя розных відаў рамена, мы прапануем таксама папулярныя японскія стравы і закускі, у тым ліку гёдза і такаякі.">Podstawą naszego rāmenu jest sprężysty makaron własnej produkcji oraz aromatyczny wywar przygotowywany przez wiele godzin. Oprócz różnych rodzajów rāmenu serwujemy również popularne japońskie dania i przekąski, takie jak gyōza czy takoyaki.</p>
+
+    <p class="about-body" data-pl="Jeśli tęsknią Państwo za japońską kuchnią albo chcą na chwilę odpocząć podczas podróży, serdecznie zapraszamy do Wabi Navi. Właściciel wraz z całym zespołem z przyjemnością Państwa ugości." data-en="Whether you are missing Japanese food or simply looking for a place to relax during your travels, we warmly invite you to visit us. The owner and the entire Wabi Navi team look forward to welcoming you." data-ja="和食が恋しくなったとき、旅の途中でほっと一息つきたいときに、ぜひご利用ください。店主をはじめ、スタッフ一同、皆さまのご来店を心よりお待ちしております。" data-uk="Якщо ви скучили за японською кухнею або просто хочете трохи відпочити під час подорожі, завітайте до Wabi Navi. Власник і вся наша команда щиро чекатимуть на вас." data-be="Калі вы сумуеце па японскай кухні або проста хочаце крыху адпачыць падчас падарожжа, завітайце ў Wabi Navi. Уладальнік і ўся наша каманда будуць шчыра рады вас вітаць.">Jeśli tęsknią Państwo za japońską kuchnią albo chcą na chwilę odpocząć podczas podróży, serdecznie zapraszamy do Wabi Navi. Właściciel wraz z całym zespołem z przyjemnością Państwa ugości.</p>
+
+    <div class="about-sign">
+      <img src="images/logo-kanji-light.png" alt="和美なび">
+      <span data-pl="Od lipca 2017 · Toruń" data-en="Since July 2017 · Toruń" data-ja="2017年7月創業 · トルン" data-uk="З липня 2017 · Торунь" data-be="З ліпеня 2017 · Торунь">Od lipca 2017 · Toruń</span>
+    </div>
+  </div>
+</section>
+
+<div class="philosophy">
+  <div class="philo-mark"><img src="images/logo-kanji-light.png" alt="和美なび"></div>
+  <div class="philo-item">
+    <span class="philo-kanji">技</span><p class="philo-en">Craft</p>
+    <p class="philo-desc" data-pl="Makaron wyrabiany ręcznie każdego ranka" data-en="Noodles hand-crafted every morning" data-ja="毎朝手打ちする自家製麺">Makaron wyrabiany ręcznie każdego ranka</p>
+  </div>
+  <div class="philo-item">
+    <span class="philo-kanji">心</span><p class="philo-en">Soul</p>
+    <p class="philo-desc" data-pl="Bulion gotowany całą dobę według japońskich receptur" data-en="Broth simmered 24h following traditional Japanese recipes" data-ja="伝統のレシピで24時間煮込んだスープ">Bulion gotowany całą dobę według japońskich receptur</p>
+  </div>
+  <div class="philo-item">
+    <span class="philo-kanji">和</span><p class="philo-en">Harmony</p>
+    <p class="philo-desc" data-pl="Japońska gościnność omotenashi w sercu Torunia" data-en="Japanese omotenashi hospitality in historic Toruń" data-ja="歴史あるトルンでのおもてなし">Japońska gościnność omotenashi w sercu Torunia</p>
+  </div>
+  <div class="philo-mark"><img src="images/logo-kana-light.png" alt="わびなび"></div>
+</div>
+
+<section class="section section-alt">
+  <div class="section-header">
+    <div><div class="divider-red"></div>
+    <h2 class="section-title" data-pl="Otsumami &amp; dodatki" data-en="Sides &amp; drinks" data-ja="おつまみ・サイド">Otsumami &amp; dodatki</h2></div>
+  </div>
+  <div class="sides-grid">
+    <div class="side-card"><img src="images/index-img-9.jpg" alt="Karaage">
+      <div class="side-card-name">Karaage</div>
+      <div class="side-card-desc" data-pl="Japońska smażona kurczak" data-en="Japanese fried chicken" data-ja="唐揚げ">Japońska smażona kurczak</div>
+    </div>
+    <div class="side-card"><div style="width:100%;aspect-ratio:1/1;background:#1c1c1c;color:#f3ead7;display:flex;align-items:center;justify-content:center;font-size:2.2rem" aria-hidden="true">🍣</div>
+      <div class="side-card-name">Maki</div>
+      <div class="side-card-desc" data-pl="Wkrótce" data-en="Coming soon" data-ja="準備中" data-uk="Незабаром" data-be="Хутка">Wkrótce</div>
+    </div>
+    <div class="side-card"><img src="images/index-maki.jpg" alt="Chashu Don">
+      <div class="side-card-name">Chashu Don</div>
+      <div class="side-card-desc" data-pl="Ryż z duszoną wieprzowiną" data-en="Rice with braised pork" data-ja="チャーシュー丼">Ryż z duszoną wieprzowiną</div>
+    </div>
+    <div class="side-card"><img src="images/index-chashu-don.jpg" alt="Matcha Latte">
+      <div class="side-card-name">Matcha Latte</div>
+      <div class="side-card-desc" data-pl="Ceremonialna herbata matcha" data-en="Ceremonial grade matcha" data-ja="抹茶ラテ">Ceremonialna herbata matcha</div>
+    </div>
+  </div>
+</section>
+
+<section class="reservation" id="rezerwacja">
+  <div>
+    <div class="divider-red"></div>
+    <h2 class="res-title" data-pl="ZAREZERWUJ STOLIK" data-en="Reserve a table" data-ja="席のご予約">Zarezerwuj stolik</h2>
+    <p class="res-intro" data-pl="Zapraszamy na niezapomniane doświadczenie ramen w historycznym sercu Torunia. Rezerwacja zalecana w weekendy." data-en="Join us for an unforgettable ramen experience in historic Toruń. Reservations recommended on weekends." data-ja="歴史的なトルンで、忘れられないラーメン体験を。週末はご予約をお勧めします。">Zapraszamy na niezapomniane doświadczenie ramen w historycznym sercu Torunia. Rezerwacja zalecana w weekendy.</p>
+    <div class="res-phone">
+      <div class="res-phone-icon"><i class="ti ti-phone" aria-hidden="true" style="font-size:17px"></i></div>
+      <div>
+        <div class="res-phone-num">(+48) 693 865 271</div>
+        <div class="res-phone-label" data-pl="Wt–Czw, Nd 13:00–19:30 · Pt–Sob 13:00–21:30" data-en="Tue–Thu, Sun 13:00–19:30 · Fri–Sat 13:00–21:30" data-ja="火–木・日 13:00–19:30 ／ 金・土 13:00–21:30" data-uk="Вт–Чт, Нд 13:00–19:30 · Пт–Сб 13:00–21:30" data-be="Аў–Чц, Нд 13:00–19:30 · Пт–Сб 13:00–21:30">Wt–Czw, Nd 13:00–19:30 · Pt–Sob 13:00–21:30</div>
+      </div>
+    </div>
+    <div class="res-address">
+      ul. Małe Garbary 5A, 87-100 Toruń<br>
+      <a href="https://g.page/WabiNaviRamen" target="_blank" rel="noopener" data-pl="Otwórz w Mapach Google →" data-en="Open in Google Maps →" data-ja="Google マップで開く →">Otwórz w Mapach Google →</a><br><br>
+      <a href="mailto:wabinavi@gmail.com">wabinavi@gmail.com</a>
+    </div>
+  </div>
+  <div>
+    <div id="memberPrompt" class="member-prompt">
+      <span class="mp-ico">⭐</span>
+      <span data-pl="Masz już konto w Wabi Navi Club? Wystarczy wpisać e-mail — rozpoznamy Cię automatycznie." data-en="Already a Wabi Navi Club member? Just enter your email — we'll recognise you automatically." data-ja="Wabi Navi Club の会員の方は、メールアドレスを入力するだけで自動的に認識されます。" data-uk="Вже маєте акаунт у Wabi Navi Club? Просто введіть e-mail — ми впізнаємо вас." data-be="Ужо маеце акаўнт у Wabi Navi Club? Проста ўвядзіце e-mail — мы вас пазнаем.">Masz już konto w Wabi Navi Club? Wystarczy wpisać e-mail — rozpoznamy Cię automatycznie.</span>
+    </div>
+    <div id="memberBanner" class="member-banner"></div>
+    <div id="resResult" class="res-result"></div>
+    <form id="reservationForm" onsubmit="submitReservation(event)">
+      <div class="hp-field"><label>Nie wypełniaj</label><input type="text" id="resHp" tabindex="-1" autocomplete="off"></div>
+      <div class="form-group">
+        <label data-pl="E-mail" data-en="Email" data-ja="メールアドレス" data-uk="E-mail" data-be="E-mail">E-mail</label>
+        <input type="email" id="resEmail" required placeholder="jan@example.com" oninput="checkMemberDebounced()" onblur="checkMember()">
+        <p class="res-note-small" data-pl="Na ten adres wyślemy potwierdzenie. Członkowie są rozpoznawani automatycznie." data-en="Confirmation is sent to this address. Members are recognised automatically." data-ja="このアドレスに確認メールをお送りします。会員の方は自動で認識されます。" data-uk="На цю адресу надішлемо підтвердження." data-be="На гэты адрас дашлём пацвярджэнне.">Na ten adres wyślemy potwierdzenie. Członkowie są rozpoznawani automatycznie.</p>
+      </div>
+      <div class="form-group">
+        <label data-pl="Imię i nazwisko" data-en="Full name" data-ja="お名前" data-uk="Ім'я та прізвище" data-be="Імя і прозвішча">Imię i nazwisko</label>
+        <input type="text" id="resName" required placeholder="Jan Kowalski">
+        <p class="res-note-small member-only" id="nameNote" style="display:none" data-pl="Rozpoznaliśmy Twoje konto — możesz pominąć to pole." data-en="We recognised your account — you can leave this blank." data-ja="会員として確認できたため、この欄は空欄で構いません。" data-uk="Ми впізнали ваш акаунт — можете залишити порожнім." data-be="Мы пазналі ваш акаўнт — можаце пакінуць пустым.">Rozpoznaliśmy Twoje konto — możesz pominąć to pole.</p>
+      </div>
+      <div class="form-group">
+        <label data-pl="Telefon kontaktowy" data-en="Phone number" data-ja="電話番号" data-uk="Телефон" data-be="Тэлефон">Telefon kontaktowy</label>
+        <input type="tel" id="resPhone" placeholder="+48 000 000 000">
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label data-pl="Data" data-en="Date" data-ja="予約日" data-uk="Дата" data-be="Дата">Data</label>
+          <input type="date" id="reservDate" required onchange="updateDayOfWeek()">
+        </div>
+        <div class="form-group">
+          <label data-pl="Dzień tygodnia" data-en="Day of week" data-ja="曜日" data-uk="День тижня" data-be="Дзень тыдня">Dzień tygodnia</label>
+          <select id="dayOfWeek">
+            <option value="">--</option>
+            <option value="Wtorek / Tuesday / 火曜日">Wtorek / Tuesday / 火曜日</option>
+            <option value="Środa / Wednesday / 水曜日">Środa / Wednesday / 水曜日</option>
+            <option value="Czwartek / Thursday / 木曜日">Czwartek / Thursday / 木曜日</option>
+            <option value="Piątek / Friday / 金曜日">Piątek / Friday / 金曜日</option>
+            <option value="Sobota / Saturday / 土曜日">Sobota / Saturday / 土曜日</option>
+            <option value="Niedziela / Sunday / 日曜日">Niedziela / Sunday / 日曜日</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label data-pl="Godzina" data-en="Time" data-ja="時間" data-uk="Час" data-be="Час">Godzina</label>
+          <select id="timeSelect" required>
+            <option value="">--</option>
+            <option>13:00</option><option>13:15</option><option>13:30</option><option>13:45</option>
+            <option>14:00</option><option>14:15</option><option>14:30</option><option>14:45</option>
+            <option>15:00</option><option>15:15</option><option>15:30</option><option>15:45</option>
+            <option>16:00</option><option>16:15</option><option>16:30</option><option>16:45</option>
+            <option>17:00</option><option>17:15</option><option>17:30</option><option>17:45</option>
+            <option>18:00</option><option>18:15</option><option>18:30</option><option>18:45</option>
+            <option>19:00</option><option>19:15</option><option>19:30</option>
+            <option id="opt1945" value="19:45" style="display:none">19:45 (tylko Pt-Sb / Fri-Sat only / 金土のみ)</option>
+            <option id="opt2000" value="20:00" style="display:none">20:00 (tylko Pt-Sb / Fri-Sat only / 金土のみ)</option>
+            <option id="opt2015" value="20:15" style="display:none">20:15 (tylko Pt-Sb / Fri-Sat only / 金土のみ)</option>
+            <option id="opt2030" value="20:30" style="display:none">20:30 (tylko Pt-Sb / Fri-Sat only / 金土のみ)</option>
+            <option id="opt2045" value="20:45" style="display:none">20:45 (tylko Pt-Sb / Fri-Sat only / 金土のみ)</option>
+            <option id="opt2100" value="21:00" style="display:none">21:00 (tylko Pt-Sb / Fri-Sat only / 金土のみ)</option>
+            <option id="opt2115" value="21:15" style="display:none">21:15 (tylko Pt-Sb / Fri-Sat only / 金土のみ)</option>
+            <option id="opt2130" value="21:30" style="display:none">21:30 (tylko Pt-Sb / Fri-Sat only / 金土のみ)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label data-pl="Liczba osób" data-en="Number of guests" data-ja="人数" data-uk="Кількість гостей" data-be="Колькасць гасцей">Liczba osób</label>
+          <select id="resGuests" required>
+            <option value="">--</option>
+            <option value="1">1 osoba / 1 guest / 1名</option>
+            <option value="2">2 osoby / 2 guests / 2名</option>
+            <option value="3">3 osoby / 3 guests / 3名</option>
+            <option value="4">4 osoby / 4 guests / 4名</option>
+            <option value="5">5 osób / 5 guests / 5名</option>
+            <option value="6">6 osób / 6 guests / 6名</option>
+            <option value="7">7 osób / 7 guests / 7名</option>
+          </select>
+          <p class="res-note-small" data-pl="Grupy 8+ osób — prosimy o kontakt telefoniczny." data-en="Groups of 8+ — please call us." data-ja="8名以上のご予約はお電話でお願いします。" data-uk="Групи від 8 осіб — зателефонуйте нам." data-be="Групы ад 8 асоб — патэлефануйце нам.">Grupy 8+ osób — prosimy o kontakt telefoniczny.</p>
+        </div>
+      </div>
+      <div class="form-group">
+        <label data-pl="Uwagi / komentarze" data-en="Comments" data-ja="ご要望・コメント" data-uk="Коментарі" data-be="Каментарыі">Uwagi / komentarze</label>
+        <input type="text" id="resComment" placeholder="">
+      </div>
+      <div class="form-group" style="margin-top:.75rem">
+        <label style="display:flex;align-items:flex-start;gap:.6rem;cursor:pointer;text-transform:none;letter-spacing:0;font-size:11px;color:var(--muted);line-height:1.5">
+          <input type="checkbox" id="resGdpr" required style="width:auto;margin-top:2px;flex-shrink:0;accent-color:var(--red)">
+          <span data-pl="Wyrażam zgodę na przetwarzanie moich danych osobowych w celu realizacji rezerwacji zgodnie z RODO. *" data-en="I consent to the processing of my personal data for reservation purposes in accordance with GDPR. *" data-ja="予約目的のための個人情報処理に同意します（GDPR）。*" data-uk="Я погоджуюся на обробку моїх персональних даних (GDPR). *" data-be="Я згаджаюся на апрацоўку маіх асабістых даных (GDPR). *">Wyrażam zgodę na przetwarzanie moich danych osobowych w celu realizacji rezerwacji zgodnie z RODO. *</span>
+        </label>
+      </div>
+      <div class="form-group">
+        <label style="display:flex;align-items:flex-start;gap:.6rem;cursor:pointer;text-transform:none;letter-spacing:0;font-size:11px;color:var(--muted);line-height:1.5">
+          <input type="checkbox" id="resPromo" style="width:auto;margin-top:2px;flex-shrink:0;accent-color:var(--red)">
+          <span data-pl="Wyrażam zgodę na otrzymywanie informacji promocyjnych przez WhatsApp, SMS lub e-mail. Zgodę można wycofać w dowolnym momencie." data-en="I agree to receive promotional information by WhatsApp, SMS or email. Consent can be withdrawn at any time." data-ja="プロモーション情報をWhatsApp・SMS・メールで受け取ることに同意します。いつでも撤回可能。" data-uk="Я погоджуюся отримувати рекламні матеріали через WhatsApp, SMS або e-mail." data-be="Я згаджаюся атрымліваць рэкламную інфармацыю праз WhatsApp, SMS або e-mail.">Wyrażam zgodę na otrzymywanie informacji promocyjnych przez WhatsApp, SMS lub e-mail. Zgodę można wycofać w dowolnym momencie.</span>
+        </label>
+      </div>
+      <p style="font-size:10px;color:#aaa;margin-bottom:.75rem" data-pl="Administratorem danych jest Wabi Navi, ul. Małe Garbary 5A, Toruń." data-en="Data controller: Wabi Navi, ul. Małe Garbary 5A, Toruń.">Administratorem danych jest Wabi Navi, ul. Małe Garbary 5A, Toruń.</p>
+      <button type="submit" class="btn-submit" data-pl="Wyślij prośbę o rezerwację" data-en="Send reservation request" data-ja="予約リクエストを送る" data-uk="ЗАБРОНЮВАТИ СТОЛИК" data-be="ЗАБРАНІРАВАЦЬ СТОЛІК">Wyślij prośbę o rezerwację</button>
+      <p class="form-note" data-pl="Potwierdzenie otrzymasz e-mailem." data-en="Confirmation will be sent by email." data-ja="確認メールをお送りします。" data-uk="Підтвердження надійде на e-mail." data-be="Пацверджанне прыйдзе на e-mail.">Potwierdzenie otrzymasz e-mailem.</p>
+    </form>
+
+  </div>
+</section>
+
+<div class="map-strip">
+  <div class="map-info">
+    <strong>WABI NAVI</strong><br>
+    ul. Małe Garbary 5A · 87-100 Toruń<br>
+    <span style="font-size:11px;color:#7a6e5e;" data-pl="W sercu Starówki, 2 min od Ratusza Staromiejskiego" data-en="In the heart of the Old Town, 2 min from the Town Hall" data-ja="旧市街の中心、旧市庁舎から徒歩2分">W sercu Starówki, 2 min od Ratusza Staromiejskiego</span>
+  </div>
+  <a href="https://g.page/WabiNaviRamen" target="_blank" rel="noopener" class="map-btn" data-pl="Otwórz w Mapach Google" data-en="Open in Google Maps" data-ja="Google マップで開く">Otwórz w Mapach Google</a>
+</div>
+
+<footer>
+  <div class="footer-logo">
+    <img src="images/index-img-10.png" alt="Wabi Navi">
+  </div>
+  <div class="footer-right">
+    <div class="footer-links">
+      <a href="https://www.instagram.com/wabinaviramen/" target="_blank" rel="noopener">Instagram</a>
+      <a href="https://www.facebook.com/WabiNaviRamen" target="_blank" rel="noopener">Facebook</a>
+      <a href="https://www.youtube.com/channel/UCN24ndvWAAxAlUUQ0kcMNgA" target="_blank" rel="noopener">YouTube</a>
+    </div>
+    <div class="footer-copy">© 2025 Wabi Navi · wabinavi@gmail.com</div>
+  </div>
+</footer>
+
+<script>
+let currentLang='pl';
+function setLang(lang,btn){
+  currentLang=lang;
+  document.querySelectorAll('.lang-bar button').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('[data-'+lang+']').forEach(el=>{
+    el.textContent=el.getAttribute('data-'+lang);
+  });
+  if (typeof renderMemberBanner === 'function') renderMemberBanner();
+}
+function toggleMenu(){
+  document.getElementById('mobile-menu').classList.toggle('open');
+}
+const dateInput=document.querySelector('input[type=date]');
+if(dateInput){
+  const today=new Date().toISOString().split('T')[0];
+  dateInput.min=today;
+  dateInput.value=today;
+}
+/* ══════════════════════════════════════════════════════════════
+   予約送信 & 会員連動（v6.9）
+   ・GAS へ直接 POST（text/plain でCORSプリフライトを回避）
+   ・メール入力時に会員照合 → バナー表示
+   ・GDPR配慮：画面には「会員を確認しました」のみ。
+     氏名・ランク・ポイント・おすすめ・イベントは確認メールで送信。
+   ══════════════════════════════════════════════════════════════ */
+var GAS_URL = 'https://script.google.com/macros/s/AKfycbztP0245VXY7DRrjOQC9m4tu-DWKcGzPwT0QzBNgxfLxgczmYmQYlP8ErEz4umoJ3FN/exec';
+try { var _u = localStorage.getItem('wabi_gas_url'); if (_u) GAS_URL = _u; } catch(e){}
+var REGISTER_URL = 'https://riichi-ramen.github.io/wabinavi-order/stamp.html';
+
+/* ── 🎁 会員機能の表示・照合を行うか（rezerwacja.html と対の設定）─────
+   会員制度・ポイント付与は未開始のため、HPには入会勧誘を一切出さない。
+     ・ナビの「Klub」／モバイルメニューの「Klub」「Rejestracja」
+     ・予約欄上部の黄色い「Wabi Navi Club の会員の方は…」
+     ・メール入力時の会員確認バナー（照合通信を含む）
+     ・送信完了画面の会員向け文言・入会案内
+   制度を開始するときは true に戻すだけでよい。
+   ※ GAS側の SHOW_MEMBER_INVITE（24_Web.gs）と必ず揃えること。
+   ※ 予約の送信・確認メール・シート記録はこの設定の影響を受けない。
+   ※ サーバー側（handleWebReservation）の会員照合は従来どおり動くので、
+     予約シートへの会員ID記録と店への「⭐会員」通知は残る。 */
+var SHOW_MEMBER_FEATURES = false;
+
+/* 制度開始までは会員関連のリンクをDOMから取り除く（枠だけ残らないように） */
+if (!SHOW_MEMBER_FEATURES) {
+  document.querySelectorAll('[data-club]').forEach(function(el){ el.remove(); });
+}
+
+var T = {
+  checking: {
+    pl:'Sprawdzamy…', en:'Checking…', ja:'照合中…', uk:'Перевіряємо…', be:'Правяраем…'
+  },
+  memberTitle: {
+    pl:'⭐ Rozpoznaliśmy Twoje konto — dziękujemy za stałą wierność!',
+    en:'⭐ We recognised your membership — thank you for your continued support!',
+    ja:'⭐ 会員として確認しました。毎度、ご愛顧ありがとうございます。',
+    uk:'⭐ Ми впізнали ваш акаунт — дякуємо за вашу вірність!',
+    be:'⭐ Мы пазналі ваш акаўнт — дзякуй за вашу вернасць!'
+  },
+  memberBody: {
+    pl:'Szczegóły konta, polecane dania i nadchodzące wydarzenia wyślemy w e-mailu potwierdzającym.',
+    en:'Your account details, recommended dishes and upcoming events will be in the confirmation email.',
+    ja:'会員情報・おすすめ商品・イベントのご案内は確認メールでお送りします。',
+    uk:'Деталі акаунта, рекомендації та події надішлемо в листі-підтвердженні.',
+    be:'Дэталі акаўнта, рэкамендацыі і падзеі дашлём у лісце-пацвярджэнні.'
+  },
+  guestTitle: {
+    pl:'Nie znaleźliśmy konta pod tym adresem.',
+    en:'We could not find an account for this address.',
+    ja:'このメールアドレスの会員登録は見つかりませんでした。',
+    uk:'Ми не знайшли акаунт для цієї адреси.',
+    be:'Мы не знайшлі акаўнт для гэтага адрасу.'
+  },
+  guestBody: {
+    pl:'Dołącz do Wabi Navi Club — zbieraj punkty przy każdej wizycie, odbieraj kupony i wypożyczaj japońskie książki za darmo. Rejestracja trwa minutę.',
+    en:'Join the Wabi Navi Club — collect points on every visit, receive coupons and borrow Japanese books for free. Registration takes a minute.',
+    ja:'Wabi Navi Club へようこそ。ご来店ごとにポイントが貯まり、クーポンや日本語書籍の無料貸出をご利用いただけます。登録は1分・無料です。',
+    uk:'Приєднуйтесь до Wabi Navi Club — бали за кожен візит, купони та безкоштовні книги.',
+    be:'Далучайцеся да Wabi Navi Club — балы за кожны візіт, купоны і бясплатныя кнігі.'
+  },
+  guestCta: {
+    pl:'Załóż darmowe konto →', en:'Create a free account →', ja:'無料で会員登録する →',
+    uk:'Створити акаунт →', be:'Стварыць акаўнт →'
+  },
+  guestSkip: {
+    pl:'Rezerwuj bez rejestracji →', en:'Continue without an account →', ja:'登録せずに予約へ進む →',
+    uk:'Продовжити без реєстрації →', be:'Працягнуць без рэгістрацыі →'
+  },
+  sending: { pl:'Wysyłanie…', en:'Sending…', ja:'送信中…', uk:'Надсилання…', be:'Адпраўка…' },
+  waiting: {
+    pl:'Przyjmujemy rezerwację…',
+    en:'Recording your reservation…',
+    ja:'ご予約を登録しています…',
+    uk:'Реєструємо бронювання…',
+    be:'Рэгіструем браніраванне…'
+  },
+  waitingLong: {
+    pl:'Jeszcze chwila — prosimy nie zamykać tej strony.',
+    en:'Almost there — please keep this page open.',
+    ja:'もう少しお待ちください。この画面は閉じないでください。',
+    uk:'Ще трохи — не закривайте цю сторінку.',
+    be:'Яшчэ крыху — не закрывайце гэту старонку.'
+  },
+  okSlow: {
+    pl:'Numer rezerwacji wyślemy e-mailem w ciągu kilku minut. Jeśli e-mail nie dotrze, prosimy o telefon: (+48) 693 865 271',
+    en:'Your reservation number will arrive by email within a few minutes. If it does not, please call: (+48) 693 865 271',
+    ja:'ご予約番号は数分以内に確認メールでお送りします。メールが届かない場合はお電話ください：(+48) 693 865 271',
+    uk:'Номер бронювання надішлемо на e-mail протягом кількох хвилин. Якщо лист не прийде, зателефонуйте: (+48) 693 865 271',
+    be:'Нумар бранiравання дашлём на e-mail на працягу некалькіх хвілін. Калі ліст не прыйдзе, патэлефануйце: (+48) 693 865 271'
+  },
+  okTitle: {
+    pl:'Dziękujemy! Rezerwacja przyjęta.', en:'Thank you! Reservation received.',
+    ja:'ありがとうございます。ご予約を承りました。',
+    uk:'Дякуємо! Бронювання прийнято.', be:'Дзякуй! Браніраванне прынята.'
+  },
+  okMail: {
+    pl:'Potwierdzenie wysłaliśmy e-mailem. Numer rezerwacji:',
+    en:'A confirmation email is on its way. Reservation number:',
+    ja:'確認メールをお送りしました。ご予約番号：',
+    uk:'Підтвердження надіслано на e-mail. Номер бронювання:',
+    be:'Пацвярджэнне дасланае на e-mail. Нумар бранiравання:'
+  },
+  okMember: {
+    pl:'⭐ Dziękujemy za stałą wierność! W e-mailu znajdziesz polecane dania i nadchodzące wydarzenia.',
+    en:'⭐ Thank you for your continued support! The email includes our picks and upcoming events.',
+    ja:'⭐ 毎度、ご愛顧ありがとうございます。メールにおすすめ商品とイベントのご案内を同封しました。',
+    uk:'⭐ Дякуємо за вірність! У листі — рекомендації та події.',
+    be:'⭐ Дзякуй за вернасць! У лісце — рэкамендацыі і падзеі.'
+  },
+  okGuest: {
+    pl:'W e-mailu znajdziesz też zaproszenie do Wabi Navi Club oraz nasze polecane dania.',
+    en:'The email also includes an invitation to the Wabi Navi Club and our current picks.',
+    ja:'メールには会員登録のご案内と今月のおすすめも同封しています。',
+    uk:'У листі також запрошення до клубу та рекомендації.',
+    be:'У лісце таксама запрашэнне ў клуб і рэкамендацыі.'
+  },
+  errNet: {
+    pl:'Nie udało się wysłać. Sprawdź połączenie lub zadzwoń: (+48) 693 865 271',
+    en:'Could not send. Please check your connection or call: (+48) 693 865 271',
+    ja:'送信できませんでした。通信状態をご確認いただくか、お電話ください：(+48) 693 865 271',
+    uk:'Не вдалося надіслати. Зателефонуйте: (+48) 693 865 271',
+    be:'Не атрымалася адправіць. Патэлефануйце: (+48) 693 865 271'
+  },
+  monday: {
+    pl:'Restauracja nieczynna w poniedziałki.', en:'Closed on Mondays.',
+    ja:'月曜日は定休日です。', uk:'У понеділок зачинено.', be:'У панядзелак зачынена.'
+  }
+};
+function t(key){ return (T[key] && (T[key][currentLang] || T[key].pl)) || ''; }
+
+/* ── 会員照合（GDPR配慮：会員か否かだけを取得）─────────────── */
+var lastCheckedEmail = '', isMemberCached = null, guestNoticeDismissed = false;
+
+function renderMemberBanner(){
+  var box = document.getElementById('memberBanner');
+  if (!box) return;
+  var prompt = document.getElementById('memberPrompt');
+  if (prompt) prompt.classList.toggle('hidden', !SHOW_MEMBER_FEATURES || isMemberCached !== null);
+  applyMemberFieldRules();
+  if (!SHOW_MEMBER_FEATURES){ box.style.display = 'none'; return; }
+  if (isMemberCached === null){ box.style.display = 'none'; return; }
+  // 「登録せずに予約へ進む」を選んだ非会員には、以後バナーを出さない
+  if (isMemberCached === false && guestNoticeDismissed){ box.style.display = 'none'; return; }
+  box.style.display = 'block';
+  if (isMemberCached === 'checking'){
+    box.className = 'member-banner checking';
+    box.textContent = t('checking');
+    return;
+  }
+  if (isMemberCached === true){
+    box.className = 'member-banner is-member';
+    box.innerHTML = '<span class="mb-title"></span><span class="mb-body"></span>';
+    box.querySelector('.mb-title').textContent = t('memberTitle');
+    box.querySelector('.mb-body').textContent  = t('memberBody');
+  } else {
+    box.className = 'member-banner is-guest';
+    box.innerHTML = '<span class="mb-title"></span><span class="mb-body"></span>' +
+                    '<div class="mb-actions">' +
+                      '<a class="mb-cta" target="_blank" rel="noopener"></a>' +
+                      '<button type="button" class="mb-skip"></button>' +
+                    '</div>';
+    box.querySelector('.mb-title').textContent = t('guestTitle');
+    box.querySelector('.mb-body').textContent  = t('guestBody');
+    var a = box.querySelector('.mb-cta');
+    a.textContent = t('guestCta');
+    a.href = REGISTER_URL;
+    var s = box.querySelector('.mb-skip');
+    s.textContent = t('guestSkip');
+    s.onclick = skipRegistration;
+  }
+}
+
+/* 「登録せずに予約へ進む」：バナーを閉じて入力欄へ誘導 */
+function skipRegistration(){
+  guestNoticeDismissed = true;
+  var box = document.getElementById('memberBanner');
+  if (box) box.style.display = 'none';
+  var nm = document.getElementById('resName');
+  if (!nm) return;
+  try { nm.scrollIntoView({ behavior:'smooth', block:'center' }); } catch(e){ nm.scrollIntoView(); }
+  setTimeout(function(){ nm.focus({ preventScroll:true }); }, 250);
+}
+
+var _cmTimer = null;
+function checkMemberDebounced(){
+  if (!SHOW_MEMBER_FEATURES) return;
+  clearTimeout(_cmTimer);
+  _cmTimer = setTimeout(checkMember, 700);   // 入力が止まって0.7秒後に照合
+}
+
+// 会員と確認できたら、氏名・電話は任意にする（会員台帳から補完される）
+function applyMemberFieldRules(){
+  var isMember = (isMemberCached === true);
+  var nm = document.getElementById('resName');
+  var ph = document.getElementById('resPhone');
+  var nt = document.getElementById('nameNote');
+  if (!nm) return;
+  nm.required = !isMember;
+  if (nt) nt.style.display = isMember ? 'block' : 'none';
+  [nm, ph].forEach(function(el){
+    if (el) el.placeholder = isMember ? '—' : (el === nm ? 'Jan Kowalski' : '+48 000 000 000');
+  });
+}
+
+function checkMember(){
+  if (!SHOW_MEMBER_FEATURES) return;
+  var el = document.getElementById('resEmail');
+  if (!el) return;
+  var email = el.value.trim();
+  if (!email || email.indexOf('@') < 1){ isMemberCached = null; renderMemberBanner(); return; }
+  if (email === lastCheckedEmail) return;
+  lastCheckedEmail = email;
+  isMemberCached = 'checking';
+  renderMemberBanner();
+
+  fetch(GAS_URL + '?action=checkMember&email=' + encodeURIComponent(email))
+    .then(function(r){ return r.json(); })
+    .then(function(j){
+      isMemberCached = (j && j.status === 'ok') ? !!j.isMember : null;
+      renderMemberBanner();
+    })
+    .catch(function(){ isMemberCached = null; renderMemberBanner(); });
+}
+
+/* ── 予約送信 ──────────────────────────────────────────────── */
+function submitReservation(e){
+  e.preventDefault();
+  var form   = document.getElementById('reservationForm');
+  var btn    = form.querySelector('.btn-submit');
+  var result = document.getElementById('resResult');
+  var dateVal = document.getElementById('reservDate').value;
+
+  if (dateVal){
+    var d = new Date(dateVal + 'T00:00:00');
+    if (d.getDay() === 1){ alert(t('monday')); return; }
+  }
+
+  var payload = {
+    action:  'webReservation',
+    email:   document.getElementById('resEmail').value.trim(),
+    name:    document.getElementById('resName').value.trim(),
+    phone:   document.getElementById('resPhone').value.trim(),
+    date:    dateVal,
+    time:    document.getElementById('timeSelect').value,
+    guests:  document.getElementById('resGuests').value,
+    comment: document.getElementById('resComment').value.trim(),
+    gdpr:    document.getElementById('resGdpr').checked,
+    promo:   document.getElementById('resPromo').checked,
+    hp:      document.getElementById('resHp').value,
+    lang:    currentLang
+  };
+
+  btn.disabled = true;
+  btn.textContent = t('sending');
+
+  // ── 即時フィードバック：押した瞬間に受付中パネルを表示し、待ち時間に応じて文言を更新
+  clearResTimers();
+  resProvisional = false;
+  showResPending(t('sending'));
+  try { result.scrollIntoView({ behavior:'smooth', block:'center' }); } catch(err){}
+  resTimers.push(setTimeout(function(){ showResPending(t('waiting')); }, 2500));
+  resTimers.push(setTimeout(function(){ showResPending(t('waitingLong')); }, 9000));
+  // サーバ側の処理が長引いても、20秒で「受付完了」を確定表示する（番号はメールで通知）
+  resTimers.push(setTimeout(function(){
+    resProvisional = true;
+    form.style.display = 'none';
+    var mb0 = document.getElementById('memberBanner');
+    if (mb0) mb0.style.display = 'none';
+    result.className = 'res-result';
+    result.style.display = 'block';
+    result.innerHTML = '<strong>' + esc(t('okTitle')) + '</strong><br>' + esc(t('okSlow'));
+  }, 20000));
+
+  fetch(GAS_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+    body: JSON.stringify(payload)
+  })
+  .then(function(r){ return r.json(); })
+  .then(function(j){
+    clearResTimers();
+    if (j && j.status === 'ok'){
+      form.style.display = 'none';
+      var mb = document.getElementById('memberBanner');
+      if (mb) mb.style.display = 'none';
+      result.className = 'res-result';
+      result.style.display = 'block';
+      result.innerHTML =
+        '<strong>' + esc(t('okTitle')) + '</strong><br>' +
+        esc(t('okMail')) + ' <span class="rr-id">' + esc(j.id) + '</span>' +
+        (SHOW_MEMBER_FEATURES
+          ? '<br><br>' + esc(j.isMember ? t('okMember') : t('okGuest'))
+          : '');
+    } else if (j && j.status === 'duplicate'){
+      result.className = 'res-result';
+      result.style.display = 'block';
+      result.textContent = j.message;
+      btn.disabled = false; btn.textContent = btnLabel();
+    } else {
+      showResError((j && j.message) || t('errNet'), btn);
+    }
+  })
+  .catch(function(){ clearResTimers(); showResError(t('errNet'), btn); });
+}
+
+/* ── 送信中の進捗表示 ─────────────────────────────────────── */
+var resTimers = [], resProvisional = false;
+
+function clearResTimers(){
+  resTimers.forEach(function(id){ clearTimeout(id); });
+  resTimers = [];
+}
+
+function showResPending(msg){
+  var result = document.getElementById('resResult');
+  if (!result) return;
+  result.className = 'res-result pending';
+  result.style.display = 'block';
+  result.innerHTML = '<span class="rr-spinner"></span>' + esc(msg);
+}
+
+function showResError(msg, btn){
+  var result = document.getElementById('resResult');
+  var form   = document.getElementById('reservationForm');
+  if (resProvisional && form) form.style.display = '';   // 暫定完了を出したあとの失敗：再送できるよう戻す
+  resProvisional = false;
+  result.className = 'res-result error';
+  result.style.display = 'block';
+  result.textContent = msg;
+  btn.disabled = false;
+  btn.textContent = btnLabel();
+}
+
+function btnLabel(){
+  var b = document.querySelector('.btn-submit');
+  return (b && b.getAttribute('data-' + currentLang)) || 'Wyślij prośbę o rezerwację';
+}
+
+function esc(x){
+  return String(x == null ? '' : x)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+// ページ読み込み時にPL表示を確定
+
+function updateDayOfWeek(){
+  const dateVal = document.getElementById('reservDate').value;
+  if(!dateVal) return;
+  const d = new Date(dateVal);
+  const days = ['','Niedziela / Sunday / 日曜日','Wtorek / Tuesday / 火曜日','Środa / Wednesday / 水曜日','Czwartek / Thursday / 木曜日','Piątek / Friday / 金曜日','Sobota / Saturday / 土曜日','Niedziela / Sunday / 日曜日'];
+  const dayMap = [6,0,1,2,3,4,5]; // 日月火水木金土 → index
+  const dow = d.getDay(); // 0=日,1=月...6=土
+  // 月曜警告
+  if(dow===1){
+    alert('Restauracja nieczynna w poniedziałki! / Closed on Mondays! / 月曜日は定休日です！');
+    document.getElementById('reservDate').value='';
+    document.getElementById('dayOfWeek').value='';
+    return;
+  }
+  const dayValues = ['Niedziela / Sunday / 日曜日','','Wtorek / Tuesday / 火曜日','Środa / Wednesday / 水曜日','Czwartek / Thursday / 木曜日','Piątek / Friday / 金曜日','Sobota / Saturday / 土曜日'];
+  document.getElementById('dayOfWeek').value = dayValues[dow] || '';
+  // 金・土なら20時以降の選択肢を表示
+  const isFriSat = (dow===5||dow===6);
+  const lateIds = ['opt1945','opt2000','opt2015','opt2030','opt2045','opt2100','opt2115','opt2130'];
+  lateIds.forEach(id=>{
+    const el = document.getElementById(id);
+    if(el) el.style.display = isFriSat?'':'none';
+  });
+}
+window.addEventListener('DOMContentLoaded', function(){
+  const plBtn = document.querySelector('.lang-bar button.active');
+  if(plBtn) setLang('pl', plBtn);
+});
+</script>
+</body>
+</html>

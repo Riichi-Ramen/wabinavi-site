@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Menu — Wabi Navi 和美なび | Ramen w Toruniu</title>
+<meta name="description" content="Aktualne menu Wabi Navi w Toruniu — ramen, onigiri, przystawki, napoje. Ceny i dostępność aktualizowane na bieżąco.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<!-- 日本語表記にだけ使う明朝体。ポーランド語は端末フォントのまま（ą/ł/ż の欠字を避けるため） -->
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;700&display=swap" rel="stylesheet">
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  --bg:#f7f0e6;          /* 生成りの和紙 */
+  --card:#fffcf5;
+  --ink:#2c1810;         /* 墨 */
+  --accent:#c0392b;      /* 暖簾の朱 */
+  --gold:#c8a96e;
+  --muted:#7a6858;
+  --border:rgba(180,140,110,.35);
+  --sold:#8a7a6a;
+  --jp:'Shippori Mincho','Yu Mincho','Hiragino Mincho ProN',serif;
+  --ui:'Segoe UI',system-ui,-apple-system,sans-serif;
+}
+
+html{scroll-behavior:smooth}
+body{
+  font-family:var(--ui);color:var(--ink);
+  background:var(--bg);
+  background-image:radial-gradient(rgba(180,140,110,.10) 1px,transparent 1px);
+  background-size:22px 22px;
+  line-height:1.6;
+}
+
+/* ── 見出し ───────────────────────────────── */
+.head{padding:2.6rem 1.2rem 1.4rem;text-align:center;max-width:1180px;margin:0 auto}
+.head .jp{font-family:var(--jp);font-size:.95rem;color:var(--accent);letter-spacing:.5em;
+  margin-bottom:.5rem}
+.head h1{font-size:clamp(1.7rem,5vw,2.6rem);font-weight:700;letter-spacing:.02em}
+.head p{color:var(--muted);font-size:.9rem;margin-top:.55rem}
+.updated{font-size:.72rem;color:var(--muted);margin-top:.5rem;opacity:.85}
+
+/* ── 言語切替 ─────────────────────────────── */
+.lang{display:flex;gap:.3rem;justify-content:center;margin-top:1rem}
+.lang button{font-family:var(--ui);font-size:.74rem;padding:.32rem .95rem;cursor:pointer;
+  border:1px solid var(--border);background:transparent;color:var(--muted);border-radius:999px}
+.lang button[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+
+/* ── カテゴリナビ ─────────────────────────── */
+.nav{position:sticky;top:0;z-index:50;background:rgba(247,240,230,.94);
+  backdrop-filter:blur(8px);border-bottom:1px solid var(--border)}
+.nav-inner{max-width:1180px;margin:0 auto;display:flex;gap:.4rem;overflow-x:auto;
+  padding:.7rem 1.2rem;scrollbar-width:none}
+.nav-inner::-webkit-scrollbar{display:none}
+.nav button{flex:0 0 auto;font-family:var(--ui);font-size:.78rem;cursor:pointer;
+  color:var(--muted);padding:.4rem .95rem;border:1px solid var(--border);
+  border-radius:999px;background:transparent;white-space:nowrap;transition:.15s}
+.nav button:hover{color:var(--accent);border-color:var(--accent)}
+.nav button[aria-pressed="true"]{background:var(--accent);color:#fffcf5;border-color:var(--accent)}
+
+/* ── セクション ───────────────────────────── */
+.wrap{max-width:1180px;margin:0 auto;padding:0 1.2rem 4rem}
+.sec{padding-top:2.6rem;scroll-margin-top:70px}
+.sec[hidden]{display:none}
+.sec-head{display:flex;align-items:baseline;gap:.7rem;margin-bottom:1.3rem;
+  padding-bottom:.6rem;border-bottom:2px solid var(--ink)}
+.sec-head h2{font-size:1.3rem;font-weight:700;letter-spacing:.01em}
+.sec-head .sub{font-size:.75rem;color:var(--muted)}
+.sec-head .cnt{margin-left:auto;font-size:.72rem;color:var(--muted);white-space:nowrap}
+
+/* ── グリッド：写真を主役にした大判 ───────── */
+.grid{display:grid;gap:1.3rem;grid-template-columns:repeat(auto-fill,minmax(300px,1fr))}
+
+/* ── カード ───────────────────────────────── */
+.card{background:var(--card);border:1px solid var(--border);border-radius:3px;
+  overflow:hidden;display:flex;flex-direction:column;position:relative}
+.shot{position:relative;aspect-ratio:3/2;overflow:hidden;background:#efe4d4}
+.shot img{width:100%;height:100%;object-fit:cover;display:block;
+  transition:transform .5s cubic-bezier(.2,.7,.3,1)}
+.card:hover .shot img{transform:scale(1.05)}
+
+/* 署名：品書きの縦書き。写真の左端に短冊のように重ねる */
+.tanzaku{position:absolute;top:0;left:.7rem;padding:.55rem .3rem .7rem;
+  font-family:var(--jp);font-size:.82rem;font-weight:500;letter-spacing:.1em;
+  writing-mode:vertical-rl;color:#fffcf5;
+  background:rgba(44,24,16,.72);max-height:86%;max-width:60%;overflow:hidden;
+  text-shadow:0 1px 3px rgba(0,0,0,.5)}
+/* 長い品名は級数を落として2〜3列に流す（縦書きの通常の組み方） */
+.tanzaku.long{font-size:.68rem;letter-spacing:.02em;padding:.45rem .25rem .55rem}
+/* 縦中横：1〜2桁の数字は寝かせず正立させる（「2個」「3個」など） */
+.tanzaku .tcy{text-combine-upright:all;-webkit-text-combine:horizontal;letter-spacing:0}
+/* 写真がまだ無い品は、日本語名そのものを品書きとして大きく見せる */
+.noshot .tanzaku{top:0;bottom:0;left:0;right:0;padding:1.1rem .4rem;
+  display:grid;place-content:center;max-height:100%;max-width:100%;
+  font-size:clamp(1rem,4vw,1.5rem);color:var(--ink);opacity:.32;
+  background:transparent;text-shadow:none}
+.noshot .tanzaku.long{font-size:clamp(.72rem,2.4vw,.92rem);letter-spacing:.04em}
+.noshot{display:flex;align-items:center;justify-content:center}
+.noshot::after{content:"";position:absolute;inset:.6rem;border:1px solid var(--border)}
+
+.body{padding:1rem 1rem 1.15rem;display:flex;flex-direction:column;flex:1;gap:.35rem}
+.name{font-size:1.08rem;font-weight:700;line-height:1.35}
+.name-sub{font-size:.82rem;color:var(--muted)}
+.desc{font-size:.92rem;line-height:1.5;color:#5a4a3a;margin-top:.25rem;
+  display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.foot{margin-top:auto;padding-top:.6rem;display:flex;align-items:baseline;gap:.45rem}
+.price{font-size:1.25rem;font-weight:700;font-variant-numeric:tabular-nums}
+.was{font-size:.9rem;color:var(--muted);text-decoration:line-through}
+.tags{display:flex;gap:.3rem;margin-left:auto;align-items:center}
+.tag{font-size:.65rem;padding:.1rem .42rem;border-radius:2px;border:1px solid var(--border);
+  color:var(--muted);white-space:nowrap}
+.tag.vege{color:#2d7a3a;border-color:#2d7a3a}
+.tag.hot{color:var(--accent);border-color:var(--accent)}
+
+/* ── 帯（おすすめ・売切・準備中） ─────────── */
+.ribbon{position:absolute;top:.7rem;right:0;font-size:.66rem;font-weight:700;
+  padding:.22rem .6rem;color:#fffcf5;background:var(--accent);letter-spacing:.02em}
+.card.off{opacity:.62}
+/* 売切・準備中は「Wyprzedane / Wkrótce」を主役にし、品書きは引っ込める */
+.card.off .tanzaku{display:none}
+.card.off .shot img{filter:grayscale(.85)}
+.veil{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  background:rgba(44,24,16,.42)}
+.veil span{font-family:var(--jp);font-size:1rem;color:#fffcf5;letter-spacing:.2em;
+  border:1px solid rgba(255,252,245,.8);padding:.35rem 1rem}
+
+.promo-note{font-size:.82rem;color:var(--accent);font-weight:700;margin-top:.3rem}
+.promo-till{font-size:.78rem;color:var(--muted);font-weight:400}
+
+/* ── 状態表示 ─────────────────────────────── */
+.state{text-align:center;padding:3.5rem 1rem;color:var(--muted);font-size:.88rem}
+.spin{width:30px;height:30px;margin:0 auto 1rem;border:3px solid var(--border);
+  border-top-color:var(--accent);border-radius:50%;animation:sp .8s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+.retry{margin-top:1rem;font-family:var(--ui);font-size:.8rem;padding:.5rem 1.2rem;
+  border:1px solid var(--accent);color:var(--accent);background:transparent;
+  border-radius:999px;cursor:pointer}
+
+.foot-note{text-align:center;font-size:.74rem;color:var(--muted);
+  padding:2.4rem 1.2rem 1rem;max-width:640px;margin:0 auto}
+.foot-note a{color:var(--accent)}
+
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+@media (prefers-reduced-motion:reduce){
+  *{animation-duration:.01ms!important;transition-duration:.01ms!important}
+  html{scroll-behavior:auto}
+}
+</style>
+</head>
+<body>
+
+<header class="head">
+  <div class="jp">品書き</div>
+  <h1 data-t="title">Menu</h1>
+  <p data-t="lead">Ceny i dostępność pobierane są na żywo z naszej kuchni.</p>
+  <div class="updated" id="updated"></div>
+  <div class="lang" role="group" aria-label="Język / Language">
+    <button type="button" data-lang="pl" aria-pressed="true">Polski</button>
+    <button type="button" data-lang="en" aria-pressed="false">English</button>
+  </div>
+</header>
+
+<nav class="nav" id="nav" hidden><div class="nav-inner" id="nav-inner"></div></nav>
+
+<main class="wrap">
+  <div id="state" class="state"><div class="spin"></div><span data-t="loading">Wczytywanie menu…</span></div>
+  <div id="sections"></div>
+</main>
+
+<p class="foot-note" data-t="note">
+  Alergeny i pełny skład podajemy w aplikacji przy stoliku oraz na życzenie u obsługi.
+</p>
+
+<script>
+/* ══════════════════════════════════════════════════════════════
+   Wabi Navi — menu na żywo / メニュー自動連動
+   データ元：注文アプリと同じGAS（メニューシートが正本）
+   写真　　：注文アプリの images/ をそのまま参照（同一オリジン）
+   ══════════════════════════════════════════════════════════════ */
+
+const APP = 'https://riichi-ramen.github.io/wabinavi-order/';
+const GAS = 'https://script.google.com/macros/s/AKfycbztP0245VXY7DRrjOQC9m4tu-DWKcGzPwT0QzBNgxfLxgczmYmQYlP8ErEz4umoJ3FN/exec';
+
+const CACHE_KEY = 'wabi_menu_v1';
+const CACHE_MS  = 5 * 60 * 1000;
+
+// 画像キャッシュ回避タグ：30分ごとに変わる値（例 2026081410_00 / _30）。
+// 写真を差し替えると、同じ30分内はキャッシュが効いて軽く、最大30分で全員に反映される。
+// 差し替え直後に自分で確認したい時は Ctrl+Shift+R で即最新が見られる。
+const CACHE_TAG = (() => {
+  const d = new Date();
+  const p = n => String(n).padStart(2, '0');
+  const half = d.getMinutes() < 30 ? '00' : '30';   // 0〜29分→00 / 30〜59分→30
+  return '' + d.getFullYear() + p(d.getMonth() + 1) + p(d.getDate()) + p(d.getHours()) + '_' + half;
+})();
+
+const T = {
+  pl:{ title:'Menu', lead:'Ceny i dostępność pobierane są na żywo z naszej kuchni.',
+       loading:'Wczytywanie menu…',
+       fail:'Nie udało się wczytać menu. Sprawdź połączenie i spróbuj ponownie.',
+       retry:'Spróbuj ponownie', sold:'Wyprzedane', soon:'Wkrótce', vege:'wege',
+       promo:'Polecane', ramenSub:'Nasza specjalność', till:'do',
+       items:'poz.', updated:'Zaktualizowano',
+       note:'Alergeny i pełny skład podajemy w aplikacji przy stoliku oraz na życzenie u obsługi.' },
+  en:{ title:'Menu', lead:'Prices and availability come straight from our kitchen.',
+       loading:'Loading menu…',
+       fail:'Could not load the menu. Check your connection and try again.',
+       retry:'Try again', sold:'Sold out', soon:'Coming soon', vege:'vegan',
+       promo:'Picks', ramenSub:'Our specialty', till:'until',
+       items:'items', updated:'Updated',
+       note:'Allergens and full ingredients are shown in the table app and available from our staff.' }
+};
+
+let LANG = (navigator.language || '').toLowerCase().startsWith('pl') ? 'pl' : 'pl';
+let DATA = null;
+
+const esc = s => String(s ?? '').replace(/[&<>"']/g,
+  c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+/* 画像の読み込み失敗時の処理。
+   Polecane専用写真（images/promo/ID.jpg）が無ければ、通常メニュー写真
+   （data-fallback）に一度だけ切り替える。それも無ければ品書き表示にする。 */
+function handleImgError_(img) {
+  const fb = img.getAttribute('data-fallback');
+  if (fb && img.src !== fb) {
+    img.removeAttribute('data-fallback');   // 二重フォールバックを防ぐ
+    img.src = fb;
+    return;
+  }
+  img.parentElement.classList.add('noshot');
+  img.remove();
+}
+
+/* 縦書き用に日本語名を整える
+   ・半角括弧 ( ) は縦書きで倒れるため全角（）に置換
+   ・1〜2桁の数字は「縦中横」で正立させる（3桁以上は慣例どおり横倒しのまま）*/
+function tategaki(jp) {
+  return esc(jp)
+    .replace(/\(/g, '（').replace(/\)/g, '）')
+    .replace(/\d+/g, d => d.length <= 2 ? `<span class="tcy">${d}</span>` : d);
+}
+
+/* ── 取得（メニュー＋非表示リスト） ───────────────────────── */
+async function fetchMenu(force) {
+  if (!force) {
+    try {
+      const c = JSON.parse(sessionStorage.getItem(CACHE_KEY) || 'null');
+      if (c && Date.now() - c.at < CACHE_MS) return c.payload;
+    } catch (e) {}
+  }
+
+  // 非表示リストは取れなくても致命的ではないので、失敗しても続行する
+  const [menuRes, hiddenRes] = await Promise.all([
+    fetch(GAS + '?action=getMenu').then(r => r.json()),
+    fetch(GAS + '?action=getHiddenItems').then(r => r.json()).catch(() => null)
+  ]);
+
+  if (!menuRes || menuRes.status !== 'ok' || !Array.isArray(menuRes.menu)) {
+    throw new Error('menu unavailable');
+  }
+
+  const payload = {
+    menu:   menuRes.menu,
+    hidden: (hiddenRes && hiddenRes.status === 'ok' && hiddenRes.hidden) || []
+  };
+  try { sessionStorage.setItem(CACHE_KEY, JSON.stringify({ at: Date.now(), payload })); } catch (e) {}
+  return payload;
+}
+
+/* ── 1品ぶんのカード ──────────────────────────────────────── */
+function card(it, catId) {
+  const t   = T[LANG];
+  const key = it.imgKey || it.id;              // ⭐おすすめは id が p_xxx なので imgKey を使う
+  const normalSrc = APP + 'images/' + key + '.jpg?v=' + CACHE_TAG;
+
+  // Polecane欄だけ、専用写真（polecane:商品ID で送られたもの）があれば優先する。
+  // 無ければ（onerrorで）通常メニューの写真にフォールバックする。
+  const isPolecane = catId === 'osusume';
+  const polecaneSrc = APP + 'images/polecane/' + key + '.jpg?v=' + CACHE_TAG;
+  const src = isPolecane ? polecaneSrc : normalSrc;
+  // フォールバック順：Polecane専用 → 通常写真 → 品書き表示（noshot）
+  const fallbackAttr = isPolecane
+    ? `data-fallback="${esc(normalSrc)}"`
+    : '';
+
+  const name = LANG === 'pl' ? it.namePL : (it.nameEN || it.namePL);
+  const sub  = LANG === 'pl' ? (it.nameEN || '') : (it.namePL || '');
+  const desc = LANG === 'pl' ? (it.descPL || '') : (it.descEN || it.descPL || '');
+  const jp   = it.nameJP || '';
+
+  const off  = it.soldOut || it.comingSoon;
+  const veil = it.soldOut ? t.sold : (it.comingSoon ? t.soon : '');
+
+  const isVege = /wege|vegan|wegań/i.test(
+    (it.namePL || '') + ' ' + (it.nameEN || '') + ' ' + (it.descPL || ''));
+
+  const tags = [];
+  if (isVege)       tags.push(`<span class="tag vege">${esc(t.vege)}</span>`);
+  if (it.spice > 0) tags.push(`<span class="tag hot">${'🌶️'.repeat(Math.min(it.spice, 3))}</span>`);
+
+  // おすすめバッジはシートにPL/JPしか無いため、PLを優先して表示する
+  const promo = it.promoPL || it.promoJP || '';
+
+  return `
+  <article class="card${off ? ' off' : ''}">
+    <div class="shot" data-key="${esc(key)}">
+      <img src="${esc(src)}" alt="${esc(name)}" loading="lazy" decoding="async" ${fallbackAttr}
+           onerror="handleImgError_(this)">
+      ${jp ? `<div class="tanzaku${jp.length > 8 ? ' long' : ''}" aria-hidden="true">${tategaki(jp)}</div>` : ''}
+      ${it.origPrice ? `<div class="ribbon">${esc(t.promo)}</div>` : ''}
+      ${veil ? `<div class="veil"><span>${esc(veil)}</span></div>` : ''}
+    </div>
+    <div class="body">
+      <div class="name">${esc(name)}</div>
+      ${sub ? `<div class="name-sub">${esc(sub)}</div>` : ''}
+      ${desc ? `<p class="desc">${esc(desc)}</p>` : ''}
+      ${promo ? `<div class="promo-note">${esc(promo)}${
+        it.promoUntil ? ` <span class="promo-till">· ${esc(t.till)} ${esc(it.promoUntil)}</span>` : ''
+      }</div>` : ''}
+      <div class="foot">
+        <span class="price">${Number(it.price)} zł</span>
+        ${it.origPrice ? `<span class="was">${Number(it.origPrice)} zł</span>` : ''}
+        <span class="tags">${tags.join('')}</span>
+      </div>
+    </div>
+  </article>`;
+}
+
+/* ── セクション ───────────────────────────────────────────── */
+function section(cat, opts) {
+  const t = T[LANG];
+  const o = opts || {};
+  const title = o.title || (LANG === 'pl' ? cat.namePL : (cat.nameEN || cat.namePL));
+  const sub   = o.sub   || (LANG === 'pl' ? (cat.nameEN || '') : (cat.namePL || ''));
+  return `
+  <section class="sec" id="cat-${esc(cat.id)}" data-cat="${esc(cat.id)}">
+    <div class="sec-head">
+      <h2>${esc(title)}</h2>
+      <span class="sub">${esc(sub)}</span>
+      <span class="cnt">${cat.items.length} ${esc(t.items)}</span>
+    </div>
+    <div class="grid">
+      ${cat.items.map(it => card(it, cat.id)).join('')}
+    </div>
+  </section>`;
+}
+
+/* 現在選択中のカテゴリ（'all' で全部）。言語を切り替えても維持する */
+let ACTIVE = 'all';
+
+/* 絞り込みを適用（セクションの表示/非表示を切り替えるだけ・再描画しない） */
+function applyFilter(cat) {
+  ACTIVE = cat;
+  document.querySelectorAll('.sec').forEach(s =>
+    s.hidden = (cat !== 'all' && s.dataset.cat !== cat));
+  document.querySelectorAll('.nav button').forEach(b =>
+    b.setAttribute('aria-pressed', String(b.dataset.cat === cat)));
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+/* ── 全体描画 ─────────────────────────────────────────────── */
+function render() {
+  const t = T[LANG];
+  document.documentElement.lang = LANG;
+  document.querySelectorAll('[data-t]').forEach(el => {
+    const k = el.dataset.t; if (t[k]) el.textContent = t[k];
+  });
+  document.querySelectorAll('.lang button').forEach(b =>
+    b.setAttribute('aria-pressed', String(b.dataset.lang === LANG)));
+
+  if (!DATA) return;
+
+  const hidden = new Set(DATA.hidden);
+  // 非表示指定を反映（⭐おすすめの複製は元IDで判定する）
+  const cats = DATA.menu
+    .map(c => ({ ...c, items: (c.items || []).filter(it => !hidden.has(it.imgKey || it.id)) }))
+    .filter(c => c.items.length);
+
+  const promo = cats.find(c => c.id === 'osusume');
+  const ramen = cats.find(c => c.id === 'ramen');
+  const rest  = cats.filter(c => c.id !== 'osusume' && c.id !== 'ramen');
+
+  let html = '';
+  const filters = [['all', LANG === 'pl' ? 'Wszystkie' : 'All']];
+
+  if (promo) {
+    html += section(promo, { title: '⭐ ' + t.promo, sub: LANG === 'pl' ? 'Oferta specjalna' : 'Special offer' });
+    filters.push(['osusume', '⭐ ' + t.promo]);
+  }
+  if (ramen) {
+    html += section(ramen, { title: 'Ramen', sub: t.ramenSub });
+    filters.push(['ramen', 'Ramen']);
+  }
+  rest.forEach(c => {
+    html += section(c);
+    filters.push([c.id, LANG === 'pl' ? c.namePL : (c.nameEN || c.namePL)]);
+  });
+
+  document.getElementById('sections').innerHTML = html;
+  document.getElementById('nav-inner').innerHTML = filters
+    .map(([id, label]) => `<button type="button" data-cat="${esc(id)}">${esc(label)}</button>`).join('');
+  document.querySelectorAll('.nav button').forEach(b =>
+    b.addEventListener('click', () => applyFilter(b.dataset.cat)));
+  document.getElementById('nav').hidden = false;
+  document.getElementById('state').style.display = 'none';
+
+  // 選択中のカテゴリを言語切替後も維持（消えたカテゴリなら全件に戻す）
+  if (ACTIVE !== 'all' && !cats.some(c => c.id === ACTIVE)) ACTIVE = 'all';
+  applyFilter(ACTIVE);
+
+  const n = cats.reduce((a, c) => a + (c.id === 'osusume' ? 0 : c.items.length), 0);
+  document.getElementById('updated').textContent =
+    `${t.updated}: ${new Date().toLocaleDateString(LANG === 'pl' ? 'pl-PL' : 'en-GB')} · ${n} ${t.items}`;
+}
+
+/* ── 起動 ─────────────────────────────────────────────────── */
+async function start(force) {
+  const state = document.getElementById('state');
+  state.style.display = '';
+  state.innerHTML = `<div class="spin"></div><span>${esc(T[LANG].loading)}</span>`;
+  try {
+    DATA = await fetchMenu(force);
+    render();
+  } catch (e) {
+    state.innerHTML =
+      `<p>${esc(T[LANG].fail)}</p><button class="retry" type="button">${esc(T[LANG].retry)}</button>`;
+    state.querySelector('.retry').addEventListener('click', () => start(true));
+  }
+}
+
+document.querySelectorAll('.lang button').forEach(b =>
+  b.addEventListener('click', () => { LANG = b.dataset.lang; render(); }));
+
+start(false);
+</script>
+</body>
+</html>

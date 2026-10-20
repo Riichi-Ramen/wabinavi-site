@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Galeria – Wabi Navi Ramen, Toruń</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--ink:#1a1208;--red:#c0392b;--gold:#b7860b;--sand:#f9f4eb;
+  --band:#efe7d8;   /* 帯の背景（和紙色）。色を変えるならここ1行 */--stone:#e0d8c8;--text:#2c2416;--muted:#7a6e5e;--white:#ffffff}
+html{scroll-behavior:smooth}
+body{font-family:"Inter",sans-serif;color:var(--text);background:var(--white)}
+.lang-bar{background:#f5f0e8;border-bottom:1px solid var(--stone);display:flex;justify-content:flex-end;padding:0 2rem}
+.lang-bar button{background:none;border:none;border-bottom:2px solid transparent;color:#666;font-size:11px;padding:7px 10px;cursor:pointer;letter-spacing:.08em;font-family:"Inter",sans-serif;transition:color .2s,border-color .2s}
+.lang-bar button.active{color:var(--red);border-bottom-color:var(--red);font-weight:500}
+nav{background:#fff;border-bottom:3px solid var(--red);display:flex;align-items:center;justify-content:space-between;padding:.5rem 2rem;flex-wrap:wrap;gap:.5rem}
+.nav-logo{display:flex;align-items:center;gap:10px}
+.nav-logo img{height:64px;width:auto}
+.nav-links{display:flex;gap:1.25rem;list-style:none;align-items:center;flex-wrap:wrap}
+.nav-links a{color:#333;text-decoration:none;font-size:12px;letter-spacing:.1em;text-transform:uppercase;font-weight:500}
+.nav-links a:hover{color:var(--red)}
+.nav-links a.active-page{color:var(--red)}
+.nav-links a.cta{background:var(--red);color:#fff;padding:8px 18px;border-radius:2px}
+.page-hero{background:var(--band);padding:2.5rem 2rem;
+  display:flex;align-items:center;justify-content:center;gap:clamp(1.2rem,5vw,4rem)}
+.page-hero .hero-text{text-align:center}
+.hero-mark{height:82px;width:auto;flex:none;opacity:.95}
+@media(max-width:760px){
+  .hero-mark{height:52px}
+  .page-hero{gap:1rem;padding:2rem 1rem}
+}
+
+.page-hero h1{font-family:"Noto Serif JP",serif;font-size:clamp(28px,4vw,48px);color:var(--text);letter-spacing:.05em}
+.page-hero p{font-size:13px;color:#8a7c66;margin-top:.5rem;letter-spacing:.1em}
+.gallery-filter{display:flex;justify-content:center;gap:.5rem;padding:1.5rem 2rem;flex-wrap:wrap;background:var(--sand);border-bottom:1px solid var(--stone)}
+.filter-btn{background:none;border:1px solid var(--stone);color:var(--muted);font-size:11px;letter-spacing:.08em;padding:7px 16px;cursor:pointer;font-family:"Inter",sans-serif;transition:all .2s;border-radius:2px}
+.filter-btn.active,.filter-btn:hover{background:var(--red);border-color:var(--red);color:#fff}
+.gallery-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:4px;padding:4px;background:#111}
+.photo-item{display:block}
+.photo-item.hidden{display:none}
+.photo-wrap{position:relative;overflow:hidden;aspect-ratio:3/4;cursor:pointer;background:#222}
+.photo-wrap img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .4s}
+.photo-wrap:hover img{transform:scale(1.06)}
+.photo-overlay{position:absolute;bottom:0;left:0;right:0;padding:1.5rem .75rem .75rem;background:linear-gradient(to top,rgba(0,0,0,.8),transparent);opacity:0;transition:opacity .3s}
+.photo-wrap:hover .photo-overlay{opacity:1}
+.photo-label{display:block;color:#fff;font-size:13px;font-weight:500}
+.photo-cat{display:block;color:#aaa;font-size:10px;letter-spacing:.08em;margin-top:2px}
+/* LIGHTBOX */
+.lightbox{display:none;position:fixed;inset:0;background:rgba(0,0,0,.95);z-index:1000;align-items:center;justify-content:center}
+.lightbox.open{display:flex}
+.lightbox img{max-width:90vw;max-height:90vh;object-fit:contain;border:2px solid rgba(255,255,255,.1)}
+.lb-close{position:fixed;top:1rem;right:1.5rem;color:#fff;font-size:32px;cursor:pointer;line-height:1}
+.lb-prev,.lb-next{position:fixed;top:50%;transform:translateY(-50%);color:#fff;font-size:36px;cursor:pointer;padding:1rem;background:rgba(255,255,255,.1);border-radius:2px;user-select:none}
+.lb-prev{left:.5rem}
+.lb-next{right:.5rem}
+footer{background:#100c06;padding:1.5rem 2rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;margin-top:4px}
+.footer-logo img{height:48px;width:auto}
+@media(max-width:600px){
+  .gallery-grid{grid-template-columns:repeat(2,1fr)}
+}
+
+/* ── スマホ最適化（v6.9）────────────────────────── */
+@media(max-width:768px){
+  nav{padding:.4rem 1.1rem}
+  .nav-logo img{height:56px!important}
+  .page-hero{padding:1.8rem 1rem;gap:.9rem}
+  .hero-mark{height:46px}
+}
+@media(max-width:480px){
+  .nav-logo img{height:48px!important}
+  nav{padding:.35rem .9rem}
+  .hero-mark{height:38px}
+  .page-hero{gap:.6rem;padding:1.5rem .8rem}
+}
+</style>
+</head>
+<body>
+<div class="lang-bar">
+  <button class="active" onclick="setLang('pl',this)">PL</button>
+  <button onclick="setLang('en',this)">EN</button>
+  <button onclick="setLang('uk',this)">УК</button>
+  <button onclick="setLang('be',this)">БЕ</button>
+  <button onclick="setLang('ja',this)">日本語</button>
+</div>
+<nav>
+  <div class="nav-logo">
+    <img src="images/logo-main.png" alt="Wabi Navi" style="height:84px;width:auto;display:block;">
+  </div>
+  <ul class="nav-links">
+    <li><a href="index.html" data-pl="Strona główna" data-en="Home" data-ja="ホーム" data-uk="Головна" data-be="Галоўная">Strona główna</a></li>
+    <li><a href="menu.html" data-pl="Menu" data-en="Menu" data-ja="メニュー" data-uk="Меню" data-be="Меню">Menu</a></li>
+    <li><a href="gallery.html" class="active-page" data-pl="Galeria" data-en="Gallery" data-ja="ギャラリー" data-uk="Галерея" data-be="Галерэя">Galeria</a></li>
+    <li><a href="index.html#rezerwacja" class="cta" data-pl="Rezerwacja" data-en="Reserve" data-ja="ご予約" data-uk="Бронювання" data-be="Браніраванне">Rezerwacja</a></li>
+  </ul>
+</nav>
+
+<div class="page-hero">
+  <img class="hero-mark" src="images/logo-kanji-light.png" alt="和美なび">
+  <div class="hero-text">
+    <h1 data-pl="Galeria" data-en="Gallery" data-ja="ギャラリー" data-uk="Галерея" data-be="Галерэя">Galeria</h1>
+  <p data-pl="Smaki Wabi Navi w obiektywie" data-en="Wabi Navi flavors through the lens" data-ja="料理の世界" data-uk="Смаки Wabi Navi" data-be="Смакі Wabi Navi">Smaki Wabi Navi w obiektywie</p>
+  </div>
+  <img class="hero-mark" src="images/logo-kana-light.png" alt="わびなび">
+</div>
+
+<div class="gallery-filter">
+  <button class="filter-btn active" onclick="filterGallery('all',this)" data-pl="Wszystkie" data-en="All" data-ja="すべて" data-uk="Усі" data-be="Усе">Wszystkie</button>
+  <button class="filter-btn" onclick="filterGallery('Ramen',this)" data-pl="Ramen" data-en="Ramen" data-ja="ラーメン" data-uk="Рамен" data-be="Рамен">Ramen</button>
+  <button class="filter-btn" onclick="filterGallery('Przystawki',this)" data-pl="Przystawki" data-en="Starters" data-ja="前菜" data-uk="Закуски" data-be="Закускі">Przystawki</button>
+  <button class="filter-btn" onclick="filterGallery('Dania z ryżem',this)" data-pl="Dania z ryżem" data-en="Rice Bowls" data-ja="丼物" data-uk="Страви з рисом" data-be="Рысавыя стравы">Dania z ryżem</button>
+  <button class="filter-btn" onclick="filterGallery('Sushi',this)" data-pl="Sushi" data-en="Sushi" data-ja="寿司" data-uk="Суші" data-be="Сушы">Sushi</button>
+  <button class="filter-btn" onclick="filterGallery('Napoje',this)" data-pl="Napoje" data-en="Drinks" data-ja="飲み物" data-uk="Напої" data-be="Напоі">Napoje</button>
+</div>
+
+<div class="gallery-grid">
+<div class="photo-item" data-cat="Napoje / Drinks">
+  <div class="photo-wrap">
+    <img src="images/gallery-img.jpg" alt="Matcha Latte" loading="lazy" onclick="openLightbox(0)">
+    <div class="photo-overlay"><span class="photo-label">Matcha Latte</span><span class="photo-cat">Napoje / Drinks</span></div>
+  </div>
+</div>
+<div class="photo-item" data-cat="Ramen / ラーメン">
+  <div class="photo-wrap">
+    <img src="images/gallery-matcha-latte.jpg" alt="Assari Ramen" loading="lazy" onclick="openLightbox(1)">
+    <div class="photo-overlay"><span class="photo-label">Assari Ramen</span><span class="photo-cat">Ramen / ラーメン</span></div>
+  </div>
+</div>
+<div class="photo-item" data-cat="Ramen / ラーメン">
+  <div class="photo-wrap">
+    <img src="images/gallery-assari-ramen.jpg" alt="Miso Ramen" loading="lazy" onclick="openLightbox(2)">
+    <div class="photo-overlay"><span class="photo-label">Miso Ramen</span><span class="photo-cat">Ramen / ラーメン</span></div>
+  </div>
+</div>
+<div class="photo-item" data-cat="Ramen / ラーメン">
+  <div class="photo-wrap">
+    <img src="images/gallery-miso-ramen.jpg" alt="Corn Ramen" loading="lazy" onclick="openLightbox(3)">
+    <div class="photo-overlay"><span class="photo-label">Corn Ramen</span><span class="photo-cat">Ramen / ラーメン</span></div>
+  </div>
+</div>
+<div class="photo-item" data-cat="Przystawki / Starters">
+  <div class="photo-wrap">
+    <img src="images/gallery-corn-ramen.jpg" alt="Karaage" loading="lazy" onclick="openLightbox(4)">
+    <div class="photo-overlay"><span class="photo-label">Karaage</span><span class="photo-cat">Przystawki / Starters</span></div>
+  </div>
+</div>
+<div class="photo-item" data-cat="Ramen / ラーメン">
+  <div class="photo-wrap">
+    <img src="images/gallery-karaage.jpg" alt="Chashu Ramen" loading="lazy" onclick="openLightbox(5)">
+    <div class="photo-overlay"><span class="photo-label">Chashu Ramen</span><span class="photo-cat">Ramen / ラーメン</span></div>
+  </div>
+</div>
+<div class="photo-item" data-cat="Ramen / ラーメン">
+  <div class="photo-wrap">
+    <img src="images/gallery-chashu-ramen.jpg" alt="Seafood Ramen" loading="lazy" onclick="openLightbox(6)">
+    <div class="photo-overlay"><span class="photo-label">Seafood Ramen</span><span class="photo-cat">Ramen / ラーメン</span></div>
+  </div>
+</div>
+<div class="photo-item" data-cat="Ramen / ラーメン">
+  <div class="photo-wrap">
+    <img src="images/gallery-seafood-ramen.jpg" alt="Ramen Special" loading="lazy" onclick="openLightbox(7)">
+    <div class="photo-overlay"><span class="photo-label">Ramen Special</span><span class="photo-cat">Ramen / ラーメン</span></div>
+  </div>
+</div>
+<div class="photo-item" data-cat="Ramen / ラーメン">
+  <div class="photo-wrap">
+    <img src="images/gallery-ramen-special.jpg" alt="Chashu Ramen" loading="lazy" onclick="openLightbox(8)">
+    <div class="photo-overlay"><span class="photo-label">Chashu Ramen</span><span class="photo-cat">Ramen / ラーメン</span></div>
+  </div>
+</div>
+<div class="photo-item" data-cat="Ramen / ラーメン">
+  <div class="photo-wrap">
+    <img src="images/gallery-chashu-ramen-2.jpg" alt="Ramen" loading="lazy" onclick="openLightbox(9)">
+    <div class="photo-overlay"><span class="photo-label">Ramen</span><span class="photo-cat">Ramen / ラーメン</span></div>
+  </div>
+</div>
+<div class="photo-item" data-cat="Przystawki / Starters">
+  <div class="photo-wrap">
+    <img src="images/gallery-salad.jpg" alt="Natto" loading="lazy" onclick="openLightbox(10)">
+    <div class="photo-overlay"><span class="photo-label">Natto</span><span class="photo-cat">Przystawki / Starters</span></div>
+  </div>
+</div>
+<div class="photo-item" data-cat="Ramen / ラーメン">
+  <div class="photo-wrap">
+    <img src="images/gallery-natto.jpg" alt="Ramen Bowl" loading="lazy" onclick="openLightbox(11)">
+    <div class="photo-overlay"><span class="photo-label">Ramen Bowl</span><span class="photo-cat">Ramen / ラーメン</span></div>
+  </div>
+</div>
+<div class="photo-item" data-cat="Ramen / ラーメン">
+  <div class="photo-wrap">
+    <img src="images/gallery-ramen-bowl.jpg" alt="Tantanmen" loading="lazy" onclick="openLightbox(12)">
+    <div class="photo-overlay"><span class="photo-label">Tantanmen</span><span class="photo-cat">Ramen / ラーメン</span></div>
+  </div>
+</div>
+<div class="photo-item" data-cat="Ramen / ラーメン">
+  <div class="photo-wrap">
+    <img src="images/gallery-tantanmen.jpg" alt="Ramen Mix" loading="lazy" onclick="openLightbox(13)">
+    <div class="photo-overlay"><span class="photo-label">Ramen Mix</span><span class="photo-cat">Ramen / ラーメン</span></div>
+  </div>
+</div>
+<div class="photo-item" data-cat="Przystawki / Starters">
+  <div class="photo-wrap">
+    <img src="images/gallery-ramen-mix.jpg" alt="Fried Sides" loading="lazy" onclick="openLightbox(14)">
+    <div class="photo-overlay"><span class="photo-label">Fried Sides</span><span class="photo-cat">Przystawki / Starters</span></div>
+  </div>
+</div>
+<div class="photo-item" data-cat="Ramen / ラーメン">
+  <div class="photo-wrap">
+    <img src="images/gallery-fried-sides.jpg" alt="Ramen" loading="lazy" onclick="openLightbox(15)">
+    <div class="photo-overlay"><span class="photo-label">Ramen</span><span class="photo-cat">Ramen / ラーメン</span></div>
+  </div>
+</div>
+<div class="photo-item" data-cat="Dania z ryżem / Rice">
+  <div class="photo-wrap">
+    <img src="images/gallery-seafood-bowl.jpg" alt="Unagi Don" loading="lazy" onclick="openLightbox(16)">
+    <div class="photo-overlay"><span class="photo-label">Unagi Don</span><span class="photo-cat">Dania z ryżem / Rice</span></div>
+  </div>
+</div>
+<div class="photo-item" data-cat="Ramen / ラーメン">
+  <div class="photo-wrap">
+    <img src="images/gallery-chashu-don-2.jpg" alt="Curry" loading="lazy" onclick="openLightbox(18)">
+    <div class="photo-overlay"><span class="photo-label">Curry</span><span class="photo-cat">Ramen / ラーメン</span></div>
+  </div>
+</div>
+<div class="photo-item" data-cat="Sushi / 寿司">
+  <div class="photo-wrap soon-tile" style="cursor:default;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:1.2rem;background:#1c1c1c;color:#f3ead7">
+    <div style="font-size:2rem;margin-bottom:.6rem">🍣</div>
+    <div style="font-size:1rem;letter-spacing:.08em;margin-bottom:.4rem">Sushi</div>
+    <div style="font-size:.95rem;line-height:1.6" data-pl="Wkrótce" data-en="Coming soon" data-ja="準備中" data-uk="Незабаром" data-be="Хутка">Wkrótce</div>
+  </div>
+</div>
+<div class="photo-item" data-cat="Ramen / ラーメン">
+  <div class="photo-wrap">
+    <img src="images/gallery-sushi-roll-3.jpg" alt="Corn Ramen 2" loading="lazy" onclick="openLightbox(23)">
+    <div class="photo-overlay"><span class="photo-label">Corn Ramen 2</span><span class="photo-cat">Ramen / ラーメン</span></div>
+  </div>
+</div>
+<div class="photo-item" data-cat="Ramen / ラーメン">
+  <div class="photo-wrap">
+    <img src="images/gallery-corn-ramen-2.jpg" alt="Ramen Light" loading="lazy" onclick="openLightbox(24)">
+    <div class="photo-overlay"><span class="photo-label">Ramen Light</span><span class="photo-cat">Ramen / ラーメン</span></div>
+  </div>
+</div>
+
+</div>
+
+<div class="lightbox" id="lightbox" onclick="closeLightbox(event)">
+  <span class="lb-close" onclick="closeLightbox()">&times;</span>
+  <span class="lb-prev" onclick="event.stopPropagation();moveLightbox(-1)">&#8249;</span>
+  <img id="lb-img" src="" alt="">
+  <span class="lb-next" onclick="event.stopPropagation();moveLightbox(1)">&#8250;</span>
+</div>
+
+<footer>
+  <div class="footer-logo"><img src="images/logo-main.png" alt="Wabi Navi"></div>
+  <div style="text-align:right;font-size:10px;color:#4a4238">© 2025 Wabi Navi · ul. Małe Garbary 5A, Toruń</div>
+</footer>
+
+<script>
+let currentLang='pl';
+function setLang(lang,btn){
+  currentLang=lang;
+  document.querySelectorAll('.lang-bar button').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('[data-'+lang+']').forEach(el=>{
+    el.textContent=el.getAttribute('data-'+lang);
+  });
+}
+window.addEventListener('DOMContentLoaded',function(){
+  const plBtn=document.querySelector('.lang-bar button.active');
+  if(plBtn) setLang('pl',plBtn);
+});
+
+function filterGallery(cat, btn){
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.photo-item').forEach(item=>{
+    if(cat==='all' || item.dataset.cat.includes(cat)){
+      item.classList.remove('hidden');
+    } else {
+      item.classList.add('hidden');
+    }
+  });
+}
+
+const imgs = ["images/gallery-img.jpg",
+"images/gallery-matcha-latte.jpg",
+"images/gallery-assari-ramen.jpg",
+"images/gallery-miso-ramen.jpg",
+"images/gallery-corn-ramen.jpg",
+"images/gallery-karaage.jpg",
+"images/gallery-chashu-ramen.jpg",
+"images/gallery-seafood-ramen.jpg",
+"images/gallery-ramen-special.jpg",
+"images/gallery-chashu-ramen-2.jpg",
+"images/gallery-salad.jpg",
+"images/gallery-natto.jpg",
+"images/gallery-ramen-bowl.jpg",
+"images/gallery-tantanmen.jpg",
+"images/gallery-ramen-mix.jpg",
+"images/gallery-fried-sides.jpg",
+"images/gallery-seafood-bowl.jpg",
+null,
+"images/gallery-chashu-don-2.jpg",
+null,
+null,
+null,
+null,
+"images/gallery-sushi-roll-3.jpg",
+"images/gallery-corn-ramen-2.jpg"];
+let currentIdx=0;
+function openLightbox(idx){
+  currentIdx=idx;
+  document.getElementById('lb-img').src=imgs[idx];
+  document.getElementById('lightbox').classList.add('open');
+}
+function closeLightbox(e){
+  if(!e || e.target===document.getElementById('lightbox') || e.target.classList.contains('lb-close')){
+    document.getElementById('lightbox').classList.remove('open');
+  }
+}
+function moveLightbox(dir){
+  // 寿司の写真は準備中のため null（非表示）。飛ばして次の写真へ
+  do { currentIdx=(currentIdx+dir+imgs.length)%imgs.length; } while(!imgs[currentIdx]);
+  document.getElementById('lb-img').src=imgs[currentIdx];
+}
+document.addEventListener('keydown',function(e){
+  if(e.key==='ArrowRight') moveLightbox(1);
+  if(e.key==='ArrowLeft') moveLightbox(-1);
+  if(e.key==='Escape') document.getElementById('lightbox').classList.remove('open');
+});
+</script>
+</body>
+</html>
