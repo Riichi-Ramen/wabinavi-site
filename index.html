@@ -71,8 +71,8 @@ nav{background:#ffffff;border-bottom:3px solid #c0392b;border-bottom:3px solid v
 .section-link{font-size:11px;letter-spacing:.12em;color:var(--red);text-decoration:none;text-transform:uppercase;border-bottom:1px solid var(--red);padding-bottom:1px;white-space:nowrap}
 .divider-red{height:3px;background:var(--red);width:36px;margin-bottom:1.25rem}
 
-/* RAMEN GRID */
-.ramen-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem}
+/* RAMEN GRID（掲載4品。2026-10-20に売っていない品を外したため4列） */
+.ramen-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.25rem}
 .ramen-card{position:relative;overflow:hidden;cursor:pointer}
 .ramen-card img{width:100%;aspect-ratio:3/4;object-fit:cover;display:block;transition:transform .4s}
 .ramen-card:hover img{transform:scale(1.04)}
@@ -298,13 +298,7 @@ footer{background:#100c06;padding:2rem 2.5rem;display:flex;justify-content:space
     <a href="#" class="section-link" data-pl="Pełne menu →" data-en="Full menu →" data-ja="メニュー全体 →">Pełne menu →</a>
   </div>
   <div class="ramen-grid">
-    <div class="ramen-card"><img src="images/index-img-4.jpg" alt="Chashu Ramen">
-      <div class="ramen-label"><div class="tag">Bestseller</div>
-        <div class="ramen-name" data-pl="Chashu Ramen" data-en="Chashu Ramen" data-ja="チャーシュー麺">Chashu Ramen</div>
-        <div class="ramen-desc" data-pl="Wieprzowina duszona · Jajko marynowane" data-en="Braised pork · Marinated egg" data-ja="チャーシュー · 味付け玉子">Wieprzowina duszona · Jajko marynowane</div>
-      </div>
-    </div>
-    <div class="ramen-card"><img src="images/index-img-5.jpg" alt="Miso Ramen">
+    <div class="ramen-card"><img src="images/gallery-ramen-special.jpg" alt="Miso Ramen">
       <div class="ramen-label">
         <div class="ramen-name" data-pl="Miso Ramen" data-en="Miso Ramen" data-ja="味噌ラーメン">Miso Ramen</div>
         <div class="ramen-desc" data-pl="Głęboki smak pasty miso" data-en="Rich fermented soybean paste" data-ja="発酵大豆の深い旨味">Głęboki smak pasty miso</div>
@@ -316,22 +310,15 @@ footer{background:#100c06;padding:2rem 2.5rem;display:flex;justify-content:space
         <div class="ramen-desc" data-pl="Krewetki · Małże · Bulion z owoców morza" data-en="Prawns · Mussels · Seafood broth" data-ja="海老 · 貝 · 海鮮スープ">Krewetki · Małże · Bulion z owoców morza</div>
       </div>
     </div>
-    <div class="ramen-card"><img src="images/index-img-6.jpg" alt="Assari Ramen">
+    <div class="ramen-card"><img src="images/index-img-6.jpg" alt="Wabi Navi Ramen">
       <div class="ramen-label">
-        <div class="ramen-name" data-pl="Assari Ramen" data-en="Assari Ramen" data-ja="あっさりラーメン">Assari Ramen</div>
-        <div class="ramen-desc" data-pl="Lekki bulion · Delikatny smak" data-en="Light broth · Delicate flavour" data-ja="あっさりスープ · 上品な味わい">Lekki bulion · Delikatny smak</div>
+        <div class="ramen-name" data-pl="Wabi Navi" data-en="Wabi Navi" data-ja="Wabi Navi">Wabi Navi</div>
       </div>
     </div>
     <div class="ramen-card"><img src="images/index-img-7.jpg" alt="Tantanmen">
       <div class="ramen-label">
         <div class="ramen-name" data-pl="Tantanmen" data-en="Tantanmen" data-ja="担々麺">Tantanmen</div>
         <div class="ramen-desc" data-pl="Ostry bulion sezamowy · Mielona wieprzowina" data-en="Spicy sesame broth · Ground pork" data-ja="ゴマ辛スープ · 挽肉">Ostry bulion sezamowy · Mielona wieprzowina</div>
-      </div>
-    </div>
-    <div class="ramen-card"><img src="images/index-img-8.jpg" alt="Kukurydziane">
-      <div class="ramen-label"><div class="tag tag-green" data-pl="Wegetariańskie" data-en="Vegetarian" data-ja="ベジタリアン">Wegetariańskie</div>
-        <div class="ramen-name" data-pl="Kukurydziane" data-en="Corn Ramen" data-ja="コーンラーメン">Kukurydziane</div>
-        <div class="ramen-desc" data-pl="Słodka kukurydza · Bulion warzywny" data-en="Sweet corn · Vegetable broth" data-ja="コーン · 野菜スープ">Słodka kukurydza · Bulion warzywny</div>
       </div>
     </div>
   </div>
