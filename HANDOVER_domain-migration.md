@@ -1,5 +1,11 @@
 # HP ドメイン移行メモ（wabinavi.com → GitHub Pages）  2026-10-20/21
 
+## 従業員向けマニュアルの場所（重要）
+- **原本は注文アプリのリポジトリ `Riichi-Ramen/wabinavi-order` の `instrukcja-obsluga-7f3a9c2e.html`（1か所のみ）。**
+- 別版は作らない。更新は原本だけで行う。
+- 公開サイト（wabinavi.com / `wabinavi-site`）には置かない（2026-10-20 に公開側から撤去済み）。
+- プロジェクトの `instrukcja.html` は 2026-10-21 に削除済み（古い控えのため）。
+
 ## 現在の構成
 - HP: GitHub `Riichi-Ramen/wabinavi-site`（main / root）→ **https://wabinavi.com**（独自ドメイン、HTTPS強制 2026-10-21 有効化）
 - 旧 `Riichi-Ramen/Riichi-Ramen.github.io`: 独自ドメインは**設定しない**（注文アプリの URL・localStorage・印刷済みQRを守るため）。HPファイルの控えとして残置。
