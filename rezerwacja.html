@@ -3,6 +3,11 @@
 <html lang="pl">
 <head>
 <meta charset="UTF-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https://riichi-ramen.github.io; connect-src https://script.google.com https://script.googleusercontent.com; base-uri 'self'; form-action 'self'; object-src 'none'">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<script>/* 他サイトの枠に埋め込まれる（クリックジャッキング）のを防ぐ */
+if (window.top !== window.self) { try { window.top.location = window.self.location; } catch (e) { document.documentElement.style.display = "none"; } }</script>
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Rezerwacja – Wabi Navi Ramen, Toruń</title>
 <meta name="description" content="Zarezerwuj stolik w Wabi Navi — japońska restauracja ramen w sercu Torunia.">
@@ -218,6 +223,9 @@ footer a{color:var(--red);text-decoration:none}
    WordPress側からはボタンでこのページへ誘導します。
    ══════════════════════════════════════════════════════════════ */
 
+/* 入力を始めた時刻（サーバー側で、人間にはありえない速さの機械的な送信を見分けるために送る） */
+var PAGE_T0 = Date.now(), FORM_T0 = 0;
+document.addEventListener('focusin', function(){ if (!FORM_T0) FORM_T0 = Date.now(); }, true);
 var GAS_URL = 'https://script.google.com/macros/s/AKfycbztP0245VXY7DRrjOQC9m4tu-DWKcGzPwT0QzBNgxfLxgczmYmQYlP8ErEz4umoJ3FN/exec';
 var REGISTER_URL = 'https://riichi-ramen.github.io/wabinavi-order/stamp.html';
 
@@ -516,6 +524,7 @@ function submitReservation(e){
     gdpr:    document.getElementById('resGdpr').checked,
     promo:   document.getElementById('resPromo').checked,
     hp:      document.getElementById('resHp').value,
+    t0:    (FORM_T0 || PAGE_T0),
     lang:    currentLang
   };
 

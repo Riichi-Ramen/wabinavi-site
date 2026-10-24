@@ -2,11 +2,15 @@
 <html lang="pl">
 <head>
 <meta charset="UTF-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https://riichi-ramen.github.io; connect-src https://script.google.com https://script.googleusercontent.com; base-uri 'self'; form-action 'self'; object-src 'none'">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<script>/* 他サイトの枠に埋め込まれる（クリックジャッキング）のを防ぐ */
+if (window.top !== window.self) { try { window.top.location = window.self.location; } catch (e) { document.documentElement.style.display = "none"; } }</script>
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>WABI NAVI – Japanese Ramen Bar, Toruń</title>
 <meta name="description" content="Japońska restauracja ramen w sercu Torunia. Prowadzona przez Japończyków.">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{
@@ -394,7 +398,7 @@ footer{background:#100c06;padding:2rem 2.5rem;display:flex;justify-content:space
     <h2 class="res-title" data-pl="ZAREZERWUJ STOLIK" data-en="Reserve a table" data-ja="席のご予約">Zarezerwuj stolik</h2>
     <p class="res-intro" data-pl="Zapraszamy na niezapomniane doświadczenie ramen w historycznym sercu Torunia. Rezerwacja zalecana w weekendy." data-en="Join us for an unforgettable ramen experience in historic Toruń. Reservations recommended on weekends." data-ja="歴史的なトルンで、忘れられないラーメン体験を。週末はご予約をお勧めします。">Zapraszamy na niezapomniane doświadczenie ramen w historycznym sercu Torunia. Rezerwacja zalecana w weekendy.</p>
     <div class="res-phone">
-      <div class="res-phone-icon"><i class="ti ti-phone" aria-hidden="true" style="font-size:17px"></i></div>
+      <div class="res-phone-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"/></svg></div>
       <div>
         <div class="res-phone-num">(+48) 693 865 271</div>
         <div class="res-phone-label" data-pl="Wt–Czw, Nd 13:00–19:30 · Pt–Sob 13:00–21:30" data-en="Tue–Thu, Sun 13:00–19:30 · Fri–Sat 13:00–21:30" data-ja="火–木・日 13:00–19:30 ／ 金・土 13:00–21:30" data-uk="Вт–Чт, Нд 13:00–19:30 · Пт–Сб 13:00–21:30" data-be="Аў–Чц, Нд 13:00–19:30 · Пт–Сб 13:00–21:30">Wt–Czw, Nd 13:00–19:30 · Pt–Sob 13:00–21:30</div>
@@ -558,8 +562,10 @@ if(dateInput){
    ・GDPR配慮：画面には「会員を確認しました」のみ。
      氏名・ランク・ポイント・おすすめ・イベントは確認メールで送信。
    ══════════════════════════════════════════════════════════════ */
+/* 入力を始めた時刻（サーバー側で、人間にはありえない速さの機械的な送信を見分けるために送る） */
+var PAGE_T0 = Date.now(), FORM_T0 = 0;
+document.addEventListener('focusin', function(){ if (!FORM_T0) FORM_T0 = Date.now(); }, true);
 var GAS_URL = 'https://script.google.com/macros/s/AKfycbztP0245VXY7DRrjOQC9m4tu-DWKcGzPwT0QzBNgxfLxgczmYmQYlP8ErEz4umoJ3FN/exec';
-try { var _u = localStorage.getItem('wabi_gas_url'); if (_u) GAS_URL = _u; } catch(e){}
 var REGISTER_URL = 'https://riichi-ramen.github.io/wabinavi-order/stamp.html';
 
 /* ── 🎁 会員機能の表示・照合を行うか（rezerwacja.html と対の設定）─────
@@ -801,6 +807,7 @@ function submitReservation(e){
     gdpr:    document.getElementById('resGdpr').checked,
     promo:   document.getElementById('resPromo').checked,
     hp:      document.getElementById('resHp').value,
+    t0:    (FORM_T0 || PAGE_T0),
     lang:    currentLang
   };
 
