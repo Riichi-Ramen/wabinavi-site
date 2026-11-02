@@ -265,7 +265,7 @@ const T = {
        note:'Skład i alergeny znajdziesz po kliknięciu w danie. Informacje mają charakter orientacyjny — w razie alergii lub wątpliwości zapytaj obsługę.',
        more:'Skład i alergeny', close:'Zamknij', prev:'Poprzednie danie', next:'Następne danie',
        ing:'Skład', allerg:'Alergeny', spicy:'Ostrość', veg:'Danie wegańskie',
-       extras:'Chcesz więcej?', extrasBtn:'Zobacz dodatki ›',
+       extras:'Chcesz więcej?', extrasTxt:'Dodatkowy makaron (kaedama) i inne dodatki do ramenu — ceny w sekcji Dodatki.', extrasBtn:'Zobacz dodatki ›',
        disc:'Informacje o alergenach mają charakter orientacyjny. Jeśli masz alergię lub nietolerancję, powiedz o tym obsłudze przed zamówieniem — kuchnia pracuje też z innymi produktami.' },
   en:{ title:'Menu', lead:'Prices and availability come straight from our kitchen.',
        loading:'Loading menu…',
@@ -276,7 +276,7 @@ const T = {
        note:'Tap a dish to see its ingredients and allergens. The information is indicative — if you have an allergy or any doubt, please ask our staff.',
        more:'Ingredients & allergens', close:'Close', prev:'Previous dish', next:'Next dish',
        ing:'Ingredients', allerg:'Allergens', spicy:'Spice level', veg:'Vegan dish',
-       extras:'Want more?', extrasBtn:'See add-ons ›',
+       extras:'Want more?', extrasTxt:'Extra noodles (kaedama) and other ramen add-ons — prices are listed in the Add-ons section.', extrasBtn:'See add-ons ›',
        disc:'Allergen information is indicative. If you have an allergy or intolerance, please tell our staff before ordering — our kitchen also handles other ingredients.' }
 };
 
@@ -568,17 +568,15 @@ function detailOf(it, catId) {
   return { name, desc, groups, note, allergens, spice, isVege, hasDetail };
 }
 
-/* ③ ラーメン用：追加麺（替え玉）などの案内。名前と値段はメニューシートから取る（二重管理しない） */
+/* ③ ラーメン用：追加麺（替え玉）・追加トッピングの案内を1か所に集約する。
+   ⚠️ 価格はここに書かない（注文アプリ・シート側に複数の値があり得るため、公開ページで断定しない）。
+      価格は「追加メニュー」の一覧に出る値だけが正。 */
 function extrasHtml(catId) {
   if (catId !== 'ramen' || !DATA) return '';
   const t = T[LANG];
-  const hidden = new Set(DATA.hidden);
-  const rows = ['d_noodle1', 'd_noodle2'].map(id => BYID[id]).filter(x => x && !hidden.has(x.imgKey || x.id) && !x.soldOut)
-    .map(x => `${esc(LANG === 'pl' ? x.namePL : (x.nameEN || x.namePL))} <b>+${Number(x.price)} zł</b>`);
-  const has = !!document.getElementById('cat-dodatki');
-  if (!rows.length && !has) return '';
-  return `<div class="extras"><b>${esc(t.extras)}</b><br>${rows.join('<br>')}${
-    has ? `<br><button type="button" data-goto="dodatki">${esc(t.extrasBtn)}</button>` : ''}</div>`;
+  if (!document.getElementById('cat-dodatki')) return '';
+  return `<div class="extras"><b>${esc(t.extras)}</b><br>${esc(t.extrasTxt)}<br>
+    <button type="button" data-goto="dodatki">${esc(t.extrasBtn)}</button></div>`;
 }
 
 function dlgHtml(cid) {
