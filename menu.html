@@ -149,6 +149,54 @@ body{
   padding:2.4rem 1.2rem 1rem;max-width:640px;margin:0 auto}
 .foot-note a{color:var(--accent)}
 
+
+/* ── 詳細ポップアップ（成分・アレルゲン）──────────────── */
+.more{margin-top:.55rem;align-self:flex-start;font-family:var(--ui);font-size:.8rem;cursor:pointer;
+  color:var(--accent);background:transparent;border:1px solid var(--accent);border-radius:999px;
+  padding:.32rem .9rem;transition:.15s}
+.more:hover,.more:focus-visible{background:var(--accent);color:#fffcf5}
+.shot[data-open],.name[data-open]{cursor:pointer}
+body.dlg-open{overflow:hidden}
+.dlg-back{position:fixed;inset:0;z-index:200;background:rgba(44,24,16,.62);backdrop-filter:blur(3px);
+  display:none;align-items:center;justify-content:center;padding:1rem}
+.dlg-back.open{display:flex}
+.dlg{background:var(--card);width:100%;max-width:560px;max-height:92vh;overflow:hidden;border-radius:6px;
+  position:relative;box-shadow:0 18px 60px rgba(0,0,0,.4);display:flex;flex-direction:column}
+.dlg-scroll{overflow-y:auto;flex:1;overscroll-behavior:contain}
+.dlg .shot{aspect-ratio:3/2}
+.dlg-x{position:absolute;top:.6rem;right:.6rem;z-index:3;width:2.4rem;height:2.4rem;border-radius:50%;
+  border:0;background:rgba(44,24,16,.78);color:#fffcf5;font-size:1.3rem;line-height:1;cursor:pointer}
+.dlg-nav{position:absolute;top:calc(min(560px,100vw - 2rem) / 3 - 1.2rem);z-index:3;width:2.4rem;height:2.4rem;
+  border-radius:50%;border:0;background:rgba(44,24,16,.55);color:#fffcf5;font-size:1.4rem;cursor:pointer}
+.dlg-nav.prev{left:.6rem}.dlg-nav.next{right:.6rem}
+.dlg-nav[hidden]{display:none}
+.dlg-body{padding:1.1rem 1.3rem 1.5rem;display:flex;flex-direction:column;gap:.7rem}
+.dlg-name{font-size:1.35rem;font-weight:700;line-height:1.3}
+.dlg-sub{font-size:.88rem;color:var(--muted);margin-top:-.4rem}
+.dlg-price{font-size:1.3rem;font-weight:700;font-variant-numeric:tabular-nums}
+.dlg-desc{font-size:.97rem;line-height:1.6;color:#4a3a2c}
+.blk h3{font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);
+  margin-bottom:.35rem;font-weight:700}
+.chips{display:flex;flex-wrap:wrap;gap:.35rem}
+.chip{font-size:.85rem;padding:.22rem .7rem;border:1px solid var(--border);border-radius:999px;background:#fff}
+.chip.base{border-color:var(--accent);color:var(--accent);font-weight:600}
+.chip.al{background:#fdf1e7;border-color:#e3b98f}
+.chip.al b{font-weight:700;color:var(--accent);margin-right:.3rem}
+.blk .hint{font-size:.8rem;color:var(--muted);margin-bottom:.35rem}
+.extras{font-size:.88rem;background:#f5ece0;border-radius:4px;padding:.7rem .85rem;line-height:1.55}
+.extras button{margin-top:.45rem;font-family:var(--ui);font-size:.8rem;cursor:pointer;color:var(--accent);
+  background:transparent;border:0;padding:0;text-decoration:underline}
+.dlg-disc{font-size:.74rem;color:var(--muted);border-top:1px solid var(--border);padding-top:.7rem}
+@media (max-width:600px){
+  .dlg-back{align-items:flex-end;padding:0}
+  .dlg{max-height:94vh;border-radius:14px 14px 0 0}
+  .dlg-nav{top:calc(100vw / 3 - 1.2rem)}
+}
+@media (prefers-reduced-motion:no-preference){
+  .dlg-back.open .dlg{animation:dlgin .22s ease-out}
+  @keyframes dlgin{from{transform:translateY(18px);opacity:0}to{transform:none;opacity:1}}
+}
+
 :focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 @media (prefers-reduced-motion:reduce){
   *{animation-duration:.01ms!important;transition-duration:.01ms!important}
@@ -176,8 +224,12 @@ body{
   <div id="sections"></div>
 </main>
 
+<div class="dlg-back" id="dlg-back" aria-hidden="true">
+  <div class="dlg" id="dlg" role="dialog" aria-modal="true" aria-labelledby="dlg-title" tabindex="-1"></div>
+</div>
+
 <p class="foot-note" data-t="note">
-  Alergeny i pełny skład podajemy w aplikacji przy stoliku oraz na życzenie u obsługi.
+  Skład i alergeny znajdziesz po kliknięciu w danie. Informacje mają charakter orientacyjny — w razie alergii lub wątpliwości zapytaj obsługę.
 </p>
 
 <script>
@@ -210,14 +262,22 @@ const T = {
        retry:'Spróbuj ponownie', sold:'Wyprzedane', soon:'Wkrótce', vege:'wege',
        promo:'Polecane', ramenSub:'Nasza specjalność', till:'do',
        items:'poz.', updated:'Zaktualizowano',
-       note:'Alergeny i pełny skład podajemy w aplikacji przy stoliku oraz na życzenie u obsługi.' },
+       note:'Skład i alergeny znajdziesz po kliknięciu w danie. Informacje mają charakter orientacyjny — w razie alergii lub wątpliwości zapytaj obsługę.',
+       more:'Skład i alergeny', close:'Zamknij', prev:'Poprzednie danie', next:'Następne danie',
+       ing:'Skład', allerg:'Alergeny', spicy:'Ostrość', veg:'Danie wegańskie',
+       extras:'Chcesz więcej?', extrasBtn:'Zobacz dodatki ›',
+       disc:'Informacje o alergenach mają charakter orientacyjny. Jeśli masz alergię lub nietolerancję, powiedz o tym obsłudze przed zamówieniem — kuchnia pracuje też z innymi produktami.' },
   en:{ title:'Menu', lead:'Prices and availability come straight from our kitchen.',
        loading:'Loading menu…',
        fail:'Could not load the menu. Check your connection and try again.',
        retry:'Try again', sold:'Sold out', soon:'Coming soon', vege:'vegan',
        promo:'Picks', ramenSub:'Our specialty', till:'until',
        items:'items', updated:'Updated',
-       note:'Allergens and full ingredients are shown in the table app and available from our staff.' }
+       note:'Tap a dish to see its ingredients and allergens. The information is indicative — if you have an allergy or any doubt, please ask our staff.',
+       more:'Ingredients & allergens', close:'Close', prev:'Previous dish', next:'Next dish',
+       ing:'Ingredients', allerg:'Allergens', spicy:'Spice level', veg:'Vegan dish',
+       extras:'Want more?', extrasBtn:'See add-ons ›',
+       disc:'Allergen information is indicative. If you have an allergy or intolerance, please tell our staff before ordering — our kitchen also handles other ingredients.' }
 };
 
 let LANG = (navigator.language || '').toLowerCase().startsWith('pl') ? 'pl' : 'pl';
@@ -279,7 +339,7 @@ async function fetchMenu() {
 }
 
 /* ── 1品ぶんのカード ──────────────────────────────────────── */
-function card(it, catId) {
+function card(it, catId, idx) {
   const t   = T[LANG];
   const key = it.imgKey || it.id;              // ⭐おすすめは id が p_xxx なので imgKey を使う
   const normalSrc = APP + 'images/' + key + '.jpg?v=' + CACHE_TAG;
@@ -311,10 +371,15 @@ function card(it, catId) {
 
   // おすすめバッジはシートにPL/JPしか無いため、PLを優先して表示する
   const promo = it.promoPL || it.promoJP || '';
+  const cid = catId + ':' + idx;
+  REG[cid] = it;
+  (CATLIST[catId] = CATLIST[catId] || []).push(cid);
+  if (catId !== 'osusume' && it.id) BYID[it.id] = it;
+  const more = detailOf(it, catId).hasDetail;
 
   return `
   <article class="card${off ? ' off' : ''}">
-    <div class="shot" data-key="${esc(key)}">
+    <div class="shot" data-key="${esc(key)}" data-open="${esc(cid)}">
       <img src="${esc(src)}" alt="${esc(name)}" loading="lazy" decoding="async" ${fallbackAttr}
            onerror="handleImgError_(this)">
       ${jp ? `<div class="tanzaku${jp.length > 8 ? ' long' : ''}" aria-hidden="true">${tategaki(jp)}</div>` : ''}
@@ -322,12 +387,13 @@ function card(it, catId) {
       ${veil ? `<div class="veil"><span>${esc(veil)}</span></div>` : ''}
     </div>
     <div class="body">
-      <div class="name">${esc(name)}</div>
+      <div class="name" data-open="${esc(cid)}">${esc(name)}</div>
       ${sub ? `<div class="name-sub">${esc(sub)}</div>` : ''}
       ${desc ? `<p class="desc">${esc(desc)}</p>` : ''}
       ${promo ? `<div class="promo-note">${esc(promo)}${
         it.promoUntil ? ` <span class="promo-till">· ${esc(t.till)} ${esc(it.promoUntil)}</span>` : ''
       }</div>` : ''}
+      ${more ? `<button type="button" class="more" data-open="${esc(cid)}">${esc(t.more)} ›</button>` : ''}
       <div class="foot">
         <span class="price">${Number(it.price)} zł</span>
         ${it.origPrice ? `<span class="was">${Number(it.origPrice)} zł</span>` : ''}
@@ -351,7 +417,7 @@ function section(cat, opts) {
       <span class="cnt">${cat.items.length} ${esc(t.items)}</span>
     </div>
     <div class="grid">
-      ${cat.items.map(it => card(it, cat.id)).join('')}
+      ${cat.items.map((it, i) => card(it, cat.id, i)).join('')}
     </div>
   </section>`;
 }
@@ -393,6 +459,8 @@ function render() {
   const ramen = cats.find(c => c.id === 'ramen');
   const rest  = cats.filter(c => c.id !== 'osusume' && c.id !== 'ramen');
 
+  REG = {}; CATLIST = {}; BYID = {};
+  cats.forEach(c => { if (c.id !== 'osusume') c.items.forEach(x => { if (x.id) BYID[x.id] = x; }); });
   let html = '';
   const filters = [['all', LANG === 'pl' ? 'Wszystkie' : 'All']];
 
@@ -421,10 +489,204 @@ function render() {
   if (ACTIVE !== 'all' && !cats.some(c => c.id === ACTIVE)) ACTIVE = 'all';
   applyFilter(ACTIVE);
 
+  if (!HASH_DONE && location.hash.length > 1) {      // #商品ID で直接ポップアップを開く（共有・QR用）
+    HASH_DONE = true;
+    try { openById(decodeURIComponent(location.hash.slice(1))); } catch (e) {}
+  }
   const n = cats.reduce((a, c) => a + (c.id === 'osusume' ? 0 : c.items.length), 0);
   document.getElementById('updated').textContent =
     `${t.updated}: ${new Date().toLocaleDateString(LANG === 'pl' ? 'pl-PL' : 'en-GB')} · ${n} ${t.items}`;
 }
+
+
+/* ── 成分・アレルゲンのポップアップ ──────────────────────────
+   データは注文アプリと同じメニューシート（G〜L列）。新しい入力は不要。
+   ・Baza:/Dodatki: などの「見出し: 値, 値」をチップ表示に整形
+   ・重複を避ける：①「Jak wyżej / As above」は元の商品（o1b→o1）の内容を表示
+                  ②名前や説明とほぼ同じ1語だけの成分、追加トッピング(dodatki)の成分は出さない
+                  ③ラーメンのトッピング説明は繰り返さず、追加メニューへの案内を1か所に集約 */
+const ALLERGEN_NAMES = {"1":{"pl":"Gluten","en":"Gluten"},"2":{"pl":"Skorupiaki","en":"Crustaceans"},"3":{"pl":"Jaja","en":"Eggs"},"4":{"pl":"Ryby","en":"Fish"},"5":{"pl":"Orzeszki ziemne","en":"Peanuts"},"6":{"pl":"Soja","en":"Soybeans"},"7":{"pl":"Mleko","en":"Milk"},"8":{"pl":"Orzechy","en":"Nuts"},"9":{"pl":"Seler","en":"Celery"},"10":{"pl":"Gorczyca","en":"Mustard"},"11":{"pl":"Sezam","en":"Sesame"},"12":{"pl":"Dwutlenek siarki","en":"Sulphites"},"13":{"pl":"Łubin","en":"Lupin"},"14":{"pl":"Mięczaki","en":"Molluscs"}};
+
+let REG = {};        // "カテゴリ:番号" → 商品
+let CATLIST = {};    // カテゴリ → ["カテゴリ:番号", ...]（前後移動用）
+let BYID = {};       // 商品ID → 商品（Polecane以外）
+let CURRENT = null, LAST_FOCUS = null, HASH_DONE = false;
+
+function splitTop(s, sep) {
+  const out = []; let d = 0, cur = '';
+  for (const ch of String(s || '')) {
+    if (ch === '(' || ch === '（') d++;
+    else if (ch === ')' || ch === '）') d = Math.max(0, d - 1);
+    if (ch === sep && d === 0) { out.push(cur); cur = ''; } else cur += ch;
+  }
+  out.push(cur);
+  return out.map(x => x.trim()).filter(Boolean);
+}
+const cap = s => s ? s.charAt(0).toUpperCase() + s.slice(1) : s;
+
+function parseIng(str) {
+  return splitTop(str, '|').map(part => {
+    const m = part.match(/^([^:：]{1,24})[:：]\s*(.+)$/);
+    const label = m ? m[1].trim() : '';
+    const vals  = m ? m[2] : part;
+    const list = /(^|\s)[a-k]\.\S/.test(vals)
+      ? vals.split(/\s+(?=[a-k]\.)/).map(x => x.replace(/^[a-k]\.\s*/, '').trim())
+      : splitTop(vals, ',');
+    return { label, list: list.filter(Boolean).map(cap) };
+  }).filter(g => g.list.length);
+}
+
+/* 表示用の詳細を作る。ここで重複を取り除く */
+function detailOf(it, catId) {
+  const pl = LANG === 'pl';
+  const name = pl ? it.namePL : (it.nameEN || it.namePL);
+  const desc = pl ? (it.descPL || '') : (it.descEN || it.descPL || '');
+  let ingStr = pl ? (it.ingPL || '') : (it.ingEN || it.ingPL || '');
+  let note = '';
+
+  // ① 「Jak wyżej / As above」→ 元の商品の成分を使う
+  if (/^(jak wyżej|as above)/i.test(ingStr.trim())) {
+    note = cap(ingStr.replace(/^(jak wyżej|as above)\s*[—–-]?\s*/i, '').trim());
+    const baseId = String(it.id || '').replace(/[a-z]$/, '');
+    const base = baseId !== it.id ? BYID[baseId] : null;
+    ingStr = base ? (pl ? (base.ingPL || '') : (base.ingEN || base.ingPL || '')) : '';
+  }
+
+  let groups = parseIng(ingStr);
+
+  // ② 追加トッピング・飲料・酒で、名前や説明と同じ内容の1語だけなら出さない
+  const flat = groups.reduce((a, g) => a + g.list.length, 0);
+  const text = (name + ' ' + desc).toLowerCase();
+  if (catId === 'dodatki') groups = [];
+  else if (flat <= 1 && (['napoje', 'alkohole', 'takeaway'].includes(catId) ||
+           groups.some(g => g.list.some(v => text.indexOf(v.toLowerCase()) !== -1)))) groups = [];
+
+  const allergens = (it.allergens || []).map(String).filter(n => ALLERGEN_NAMES[n]);
+  const spice = Number(it.spice) || 0;
+  const isVege = /wege|vegan|wegań/i.test((it.namePL || '') + ' ' + (it.nameEN || '') + ' ' + (it.descPL || ''));
+  const hasDetail = groups.length > 0 || allergens.length > 0 || spice > 0 || desc.length > 100;
+  return { name, desc, groups, note, allergens, spice, isVege, hasDetail };
+}
+
+/* ③ ラーメン用：追加麺（替え玉）などの案内。名前と値段はメニューシートから取る（二重管理しない） */
+function extrasHtml(catId) {
+  if (catId !== 'ramen' || !DATA) return '';
+  const t = T[LANG];
+  const hidden = new Set(DATA.hidden);
+  const rows = ['d_noodle1', 'd_noodle2'].map(id => BYID[id]).filter(x => x && !hidden.has(x.imgKey || x.id) && !x.soldOut)
+    .map(x => `${esc(LANG === 'pl' ? x.namePL : (x.nameEN || x.namePL))} <b>+${Number(x.price)} zł</b>`);
+  const has = !!document.getElementById('cat-dodatki');
+  if (!rows.length && !has) return '';
+  return `<div class="extras"><b>${esc(t.extras)}</b><br>${rows.join('<br>')}${
+    has ? `<br><button type="button" data-goto="dodatki">${esc(t.extrasBtn)}</button>` : ''}</div>`;
+}
+
+function dlgHtml(cid) {
+  const it = REG[cid]; if (!it) return '';
+  const catId = cid.split(':')[0];
+  const t = T[LANG];
+  const d = detailOf(it, catId);
+  const key = it.imgKey || it.id;
+  const src = (catId === 'osusume' ? APP + 'images/polecane/' : APP + 'images/') + key + '.jpg?v=' + CACHE_TAG;
+  const fb  = catId === 'osusume' ? `data-fallback="${esc(APP + 'images/' + key + '.jpg?v=' + CACHE_TAG)}"` : '';
+  let sub = LANG === 'pl' ? (it.nameEN || '') : (it.namePL || '');
+  if (sub.trim().toLowerCase() === d.name.trim().toLowerCase()) sub = '';   // 同じ名前の繰り返しは出さない
+  const jp  = it.nameJP || '';
+  const list = CATLIST[catId] || [], i = list.indexOf(cid);
+  const hasShot = it.hasPhoto !== false;   // 写真の有無はカード側と同じく画像のonerrorで判定
+  return `
+    <button type="button" class="dlg-x" data-close aria-label="${esc(t.close)}">×</button>
+    <button type="button" class="dlg-nav prev" data-step="-1" aria-label="${esc(t.prev)}" ${i <= 0 ? 'hidden' : ''}>‹</button>
+    <button type="button" class="dlg-nav next" data-step="1" aria-label="${esc(t.next)}" ${i >= list.length - 1 ? 'hidden' : ''}>›</button>
+    <div class="dlg-scroll">
+    <div class="shot${hasShot ? '' : ' noshot'}">
+      ${hasShot ? `<img src="${esc(src)}" alt="${esc(d.name)}" decoding="async" ${fb} onerror="handleImgError_(this)">` : ''}
+      ${jp ? `<div class="tanzaku${jp.length > 8 ? ' long' : ''}" aria-hidden="true">${tategaki(jp)}</div>` : ''}
+    </div>
+    <div class="dlg-body">
+      <div class="dlg-name" id="dlg-title">${esc(d.name)}</div>
+      ${sub ? `<div class="dlg-sub">${esc(sub)}</div>` : ''}
+      <div class="dlg-price">${Number(it.price)} zł${it.origPrice ? ` <span class="was">${Number(it.origPrice)} zł</span>` : ''}</div>
+      ${d.desc ? `<p class="dlg-desc">${esc(d.desc)}</p>` : ''}
+      ${d.isVege ? `<div class="blk"><div class="chips"><span class="chip">🌱 ${esc(t.veg)}</span></div></div>` : ''}
+      ${d.spice > 0 ? `<div class="blk"><h3>${esc(t.spicy)}</h3><div>${'🌶️'.repeat(Math.min(d.spice, 5))}</div></div>` : ''}
+      ${d.groups.map((g, gi) => `
+        <div class="blk"><h3>${esc(g.label || t.ing)}</h3>
+          ${gi === 0 && d.note ? `<div class="hint">${esc(d.note)}</div>` : ''}
+          <div class="chips">${g.list.map(v => `<span class="chip${/^(baza|base)$/i.test(g.label) ? ' base' : ''}">${esc(v)}</span>`).join('')}</div>
+        </div>`).join('')}
+      ${extrasHtml(catId)}
+      ${d.allergens.length ? `<div class="blk"><h3>${esc(t.allerg)}</h3><div class="chips">${
+        d.allergens.map(n => `<span class="chip al"><b>${esc(n)}</b>${esc(ALLERGEN_NAMES[n][LANG])}</span>`).join('')}</div></div>` : ''}
+      <p class="dlg-disc">${esc(t.disc)}</p>
+    </div>
+    </div>`;
+}
+
+function openDlg(cid, fromUser) {
+  if (!REG[cid]) return;
+  const back = document.getElementById('dlg-back'), box = document.getElementById('dlg');
+  if (fromUser !== false && !back.classList.contains('open')) LAST_FOCUS = document.activeElement;
+  CURRENT = cid;
+  box.innerHTML = dlgHtml(cid);
+  const sc = box.querySelector('.dlg-scroll'); if (sc) sc.scrollTop = 0;
+  back.classList.add('open'); back.setAttribute('aria-hidden', 'false');
+  document.body.classList.add('dlg-open');
+  const x = box.querySelector('.dlg-x'); if (x) x.focus();
+  const id = REG[cid].id;
+  try { history.replaceState(null, '', '#' + encodeURIComponent(id)); } catch (e) {}
+}
+function closeDlg() {
+  const back = document.getElementById('dlg-back');
+  if (!back.classList.contains('open')) return;
+  back.classList.remove('open'); back.setAttribute('aria-hidden', 'true');
+  document.body.classList.remove('dlg-open');
+  CURRENT = null;
+  try { history.replaceState(null, '', location.pathname + location.search); } catch (e) {}
+  if (LAST_FOCUS && LAST_FOCUS.focus) { try { LAST_FOCUS.focus(); } catch (e) {} }
+}
+function stepDlg(n) {
+  if (!CURRENT) return;
+  const catId = CURRENT.split(':')[0], list = CATLIST[catId] || [];
+  const j = list.indexOf(CURRENT) + n;
+  if (j >= 0 && j < list.length) openDlg(list[j], false);
+}
+function openById(id) {
+  const cid = Object.keys(REG).find(k => !k.startsWith('osusume:') && REG[k].id === id)
+           || Object.keys(REG).find(k => REG[k].id === id);
+  if (cid) { applyFilter(cid.split(':')[0] === 'osusume' ? 'all' : cid.split(':')[0]); openDlg(cid); }
+}
+
+(function bindDlg() {
+  const back = document.getElementById('dlg-back'), box = document.getElementById('dlg');
+  document.getElementById('sections').addEventListener('click', e => {
+    const o = e.target.closest('[data-open]'); if (o) openDlg(o.dataset.open);
+  });
+  back.addEventListener('click', e => { if (e.target === back) closeDlg(); });
+  box.addEventListener('click', e => {
+    if (e.target.closest('[data-close]')) return closeDlg();
+    const st = e.target.closest('[data-step]'); if (st) return stepDlg(Number(st.dataset.step));
+    const g = e.target.closest('[data-goto]');
+    if (g) { closeDlg(); LAST_FOCUS = null; applyFilter(g.dataset.goto); }
+  });
+  document.addEventListener('keydown', e => {
+    if (!back.classList.contains('open')) return;
+    if (e.key === 'Escape') return closeDlg();
+    if (e.key === 'ArrowLeft') return stepDlg(-1);
+    if (e.key === 'ArrowRight') return stepDlg(1);
+    if (e.key === 'Tab') {       // フォーカスをポップアップ内に閉じ込める
+      const f = [...box.querySelectorAll('button:not([hidden])')];
+      if (!f.length) return;
+      const first = f[0], last = f[f.length - 1];
+      if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+      else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+    }
+  });
+  window.addEventListener('hashchange', () => {
+    const id = decodeURIComponent(location.hash.slice(1));
+    if (id && DATA && (!CURRENT || REG[CURRENT].id !== id)) openById(id);
+  });
+})();
 
 /* ── 起動 ─────────────────────────────────────────────────── */
 async function start(force) {
