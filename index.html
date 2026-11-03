@@ -2,7 +2,7 @@
 <html lang="pl">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https://riichi-ramen.github.io; connect-src https://script.google.com https://script.googleusercontent.com; base-uri 'self'; form-action 'self'; object-src 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https://riichi-ramen.github.io; connect-src https://script.google.com https://script.googleusercontent.com https://riichi-ramen.github.io; base-uri 'self'; form-action 'self'; object-src 'none'">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <script>/* 他サイトの枠に埋め込まれる（クリックジャッキング）のを防ぐ */
 if (window.top !== window.self) { try { window.top.location = window.self.location; } catch (e) { document.documentElement.style.display = "none"; } }</script>
@@ -74,6 +74,17 @@ nav{background:#ffffff;border-bottom:3px solid #c0392b;border-bottom:3px solid v
 .section-title{font-family:"Noto Serif JP",serif;font-size:clamp(22px,3vw,30px);color:var(--ink)}
 .section-link{font-size:11px;letter-spacing:.12em;color:var(--red);text-decoration:none;text-transform:uppercase;border-bottom:1px solid var(--red);padding-bottom:1px;white-space:nowrap}
 .divider-red{height:3px;background:var(--red);width:36px;margin-bottom:1.25rem}
+
+/* AKTUALNOŚCI（2026-11-03：承認済みの広告カレンダーだけを表示） */
+.news{background:var(--band)}
+.news-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem}
+.news-card{display:block;background:var(--white);color:var(--text);text-decoration:none;border:1px solid var(--stone)}
+.news-card-body{padding:1rem}
+.news-card img{width:100%;aspect-ratio:16/9;object-fit:cover;display:block}
+.news-date{font-size:.68rem;letter-spacing:.08em;color:var(--gold);margin-bottom:.55rem}
+.news-pl{font-family:"Noto Serif JP",serif;font-size:1rem;line-height:1.45;color:var(--ink)}
+.news-en{font-size:.8rem;line-height:1.5;color:var(--muted);margin-top:.35rem}
+.news-ja{font-size:.72rem;line-height:1.5;color:var(--muted);margin-top:.55rem}
 
 /* RAMEN GRID（掲載4品。2026-10-20に売っていない品を外したため4列） */
 .ramen-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.25rem}
@@ -157,6 +168,7 @@ footer{background:#100c06;padding:2rem 2.5rem;display:flex;justify-content:space
   .hamburger{display:flex}
   .mobile-menu.open{display:flex}
   .ramen-grid{grid-template-columns:repeat(2,1fr)}
+  .news-grid{grid-template-columns:1fr}
   .sides-grid{grid-template-columns:repeat(2,1fr)}
   .philosophy{grid-template-columns:1fr;gap:2rem}
   .philo-item{border-right:none;border-bottom:1px solid rgba(44,36,22,.14);padding:0 0 2rem}
@@ -294,6 +306,15 @@ footer{background:#100c06;padding:2rem 2.5rem;display:flex;justify-content:space
     <strong data-pl="Pon: nieczynne" data-en="Mon: closed" data-ja="月：定休日">Pon: nieczynne</strong>
   </span>
 </div>
+
+<section class="section news" id="aktualnosci" hidden>
+  <div class="section-header">
+    <div><div class="divider-red"></div>
+      <h2 class="section-title" data-pl="Aktualności" data-en="News" data-ja="最新情報" data-uk="Новини" data-be="Навіны">Aktualności</h2>
+    </div>
+  </div>
+  <div class="news-grid" id="newsGrid"></div>
+</section>
 
 <section class="section" id="menu">
   <div class="section-header">
@@ -932,6 +953,70 @@ window.addEventListener('DOMContentLoaded', function(){
   const plBtn = document.querySelector('.lang-bar button.active');
   if(plBtn) setLang('pl', plBtn);
 });
+</script>
+<script>
+/* Aktualności（2026-11-03）：JSONを文字列として扱い、DOM生成だけで安全に表示する。 */
+(function(){
+  const NEWS_URL = 'https://riichi-ramen.github.io/wabinavi-order/news/news.json';
+  const NEWS_IMAGE_BASE = 'https://riichi-ramen.github.io/wabinavi-order/';
+  const NEWS_IMAGE_RE = /^images\/(promo\/[a-z0-9_-]+|[a-z0-9_]+)\.jpg$/;
+
+  function newsText(value, max){
+    return typeof value === 'string' && value.length <= max ? value : null;
+  }
+
+  function newsLine(className, value){
+    const el = document.createElement('p');
+    el.className = className;
+    el.textContent = value;
+    return el;
+  }
+
+  function newsCard(item){
+    if (!item || typeof item !== 'object') return null;
+    const pl = newsText(item.pl, 80);
+    const en = newsText(item.en, 80);
+    const ja = item.ja == null ? '' : newsText(item.ja, 40);
+    if (pl === null || en === null || ja === null || !pl || !en) return null;
+    const linked = typeof item.pid === 'string' && /^[a-z0-9_]+$/.test(item.pid);
+    const card = document.createElement(linked ? 'a' : 'article');
+    card.className = 'news-card';
+    if (linked) card.href = 'menu.html#' + item.pid;
+    if (typeof item.img === 'string' && NEWS_IMAGE_RE.test(item.img)) {
+      const image = document.createElement('img');
+      image.src = NEWS_IMAGE_BASE + item.img;
+      image.alt = pl;
+      image.loading = 'lazy';
+      card.appendChild(image);
+    }
+    const body = document.createElement('div');
+    body.className = 'news-card-body';
+    const date = newsText(item.date, 10);
+    if (date) body.appendChild(newsLine('news-date', date));
+    body.appendChild(newsLine('news-pl', pl));
+    body.appendChild(newsLine('news-en', en));
+    if (ja) body.appendChild(newsLine('news-ja', ja));
+    card.appendChild(body);
+    return card;
+  }
+
+  window.addEventListener('DOMContentLoaded', function(){
+    const section = document.getElementById('aktualnosci');
+    const grid = document.getElementById('newsGrid');
+    if (!section || !grid) return;
+    fetch(NEWS_URL, {cache:'no-cache'})
+      .then(function(response){ if (!response.ok) throw new Error('news'); return response.json(); })
+      .then(function(data){
+        if (!data || data.v !== 1 || !Array.isArray(data.items)) return;
+        data.items.slice(0, 6).forEach(function(item){
+          const card = newsCard(item);
+          if (card) grid.appendChild(card);
+        });
+        if (grid.children.length) section.hidden = false;
+      })
+      .catch(function(){});
+  });
+})();
 </script>
 <script>
 /* メニューの先読み：トップを開いた人が次にメニューを開いたとき、すぐ表示できるように
